@@ -23,3 +23,14 @@ go.work.sum
 
 # env file
 .env
+
+# private/public key
+id_rsa_priv.pem
+id_rsa_pub.pem
+private_key.pem
+
+# db data
+db_data
+
+# vscode
+.vscode
