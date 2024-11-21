@@ -20,5 +20,5 @@ func InitValidator() {
 }
 
 func (c Checker) Check(v any) error {
-	return c.Struct(v)
+	return c.Struct(&v)
 }
