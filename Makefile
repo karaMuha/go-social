@@ -6,3 +6,6 @@ setup:
 
 start:
 	docker-compose up -d
+
+migrate_create:
+	migrate create -seq -ext sql -dir ./cmd/internal/database/migrate/migrations ${name}
