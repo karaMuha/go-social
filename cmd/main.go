@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/karaMuha/go-social/internal/config"
+	"github.com/karaMuha/go-social/internal/database/postgres"
 	"github.com/karaMuha/go-social/internal/monolith"
-	"github.com/karaMuha/go-social/internal/postgres"
 	"github.com/karaMuha/go-social/posts"
 	"github.com/karaMuha/go-social/users"
 
@@ -31,6 +31,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	defer db.Close()
 
 	router := http.NewServeMux()
 

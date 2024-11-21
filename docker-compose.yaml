@@ -11,7 +11,7 @@ services:
       replicas: 1
     environment:
       REST_PORT: ":8080"
-      DB_CONNECTION: "host=postgres port=5432 user=postgres password=postgres dbname=social_db sslmode=disable"
+      DB_CONNECTION: "host=postgres port=5432 user=admin password=secret dbname=social_db sslmode=disable"
       DB_DRIVER: "postgres"
       PRIVATE_KEY_PATH: "private_key.pem"
     depends_on:
@@ -27,8 +27,8 @@ services:
       mode: replicated
       replicas: 1
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "secret"
       POSTGRES_DB: "social_db"
     volumes:
       - ./db_data/postgres/:/var/lib/postgresql/data
