@@ -9,3 +9,6 @@ start:
 
 migrate_create:
 	migrate create -seq -ext sql -dir ./cmd/internal/database/migrate/migrations ${name}
+
+migrate_up:
+	migrate -path=./cmd/internal/database/migrate/migrations -database "postgresql://admin:secret@localhost:5432/social_db?sslmode=disable" -verbose up
