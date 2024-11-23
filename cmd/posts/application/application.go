@@ -1,6 +1,6 @@
 package application
 
-import ports "github.com/karaMuha/go-social/users/application/ports/driver"
+import ports "github.com/karaMuha/go-social/posts/application/ports/driver"
 
 type Application struct {
 	Commands
