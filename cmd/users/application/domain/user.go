@@ -2,8 +2,6 @@ package domain
 
 import (
 	"time"
-
-	"github.com/karaMuha/go-social/users/application/utils"
 )
 
 type User struct {
@@ -22,7 +20,7 @@ func RegisterUser(username, email, password string) (*User, error) {
 		CreatedAt: time.Now(),
 	}
 
-	err := utils.Validator.Check(user)
+	err := val.Struct(&user)
 	if err != nil {
 		return nil, err
 	}
