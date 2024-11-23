@@ -20,7 +20,7 @@ func RegisterUser(username, email, password string) (*User, error) {
 		CreatedAt: time.Now(),
 	}
 
-	err := val.Struct(&user)
+	err := validate.Struct(&user)
 	if err != nil {
 		return nil, err
 	}

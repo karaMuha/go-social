@@ -1,22 +1,30 @@
 package application
 
 import (
+	"github.com/karaMuha/go-social/users/application/commands"
 	"github.com/karaMuha/go-social/users/application/domain"
-	ports "github.com/karaMuha/go-social/users/application/ports/driver"
+	drivenPorts "github.com/karaMuha/go-social/users/application/ports/driven"
+	driverPorts "github.com/karaMuha/go-social/users/application/ports/driver"
 )
 
 type Application struct {
-	Commands
-	Queries
+	appCommands
+	appQueries
 }
 
-type Commands struct{}
+type appCommands struct {
+	commands.RegisterUserCommand
+}
 
-type Queries struct{}
+type appQueries struct{}
 
-var _ ports.IApplication = (*Application)(nil)
+var _ driverPorts.IApplication = (*Application)(nil)
 
-func New() *Application {
+func New(usersRepo drivenPorts.IUsersRepsitory) Application {
 	domain.InitValidator()
-	return &Application{}
+	return Application{
+		appCommands: appCommands{
+			RegisterUserCommand: commands.NewRegisterUserCommand(usersRepo),
+		},
+	}
 }

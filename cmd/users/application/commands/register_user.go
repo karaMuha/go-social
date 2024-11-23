@@ -14,26 +14,26 @@ type RegisterUserDto struct {
 	Password string
 }
 
-type RegisterUserHandler struct {
+type RegisterUserCommand struct {
 	usersRepo ports.IUsersRepsitory
 }
 
-func NewRegisterUserHandler(usersRepo ports.IUsersRepsitory) RegisterUserHandler {
-	return RegisterUserHandler{
+func NewRegisterUserCommand(usersRepo ports.IUsersRepsitory) RegisterUserCommand {
+	return RegisterUserCommand{
 		usersRepo: usersRepo,
 	}
 }
 
-func (h RegisterUserHandler) RegisterUser(ctx context.Context, cmd RegisterUserDto) (*domain.User, error) {
+func (c RegisterUserCommand) RegisterUser(ctx context.Context, cmd RegisterUserDto) error {
 	user, err := domain.RegisterUser(cmd.Username, cmd.Email, cmd.Password)
 	if err != nil {
-		return nil, fmt.Errorf("error registering user: %w", err)
+		return fmt.Errorf("error registering user: %w", err)
 	}
 
-	user, err = h.usersRepo.Register(ctx, user)
+	err = c.usersRepo.Register(ctx, user)
 	if err != nil {
-		return nil, fmt.Errorf("error registering user: %w", err)
+		return fmt.Errorf("error registering user: %w", err)
 	}
 
-	return user, nil
+	return nil
 }
