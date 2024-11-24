@@ -22,6 +22,7 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 	// setup driver adapters
 	usersHandlerV1 := rest.NewUsersHandlerV1(app)
 	setupRoutes(mono.Mux(), usersHandlerV1)
+
 	return nil
 }
 

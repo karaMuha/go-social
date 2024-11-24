@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/karaMuha/go-social/users/application/domain"
-	ports "github.com/karaMuha/go-social/users/application/ports/driven"
+	"github.com/karaMuha/go-social/users/application/ports/driven"
 )
 
 type UsersRepository struct {
@@ -21,7 +21,7 @@ func NewUsersRepository(db *sql.DB) UsersRepository {
 	}
 }
 
-var _ ports.IUsersRepsitory = (*UsersRepository)(nil)
+var _ driven.IUsersRepsitory = (*UsersRepository)(nil)
 
 func (r UsersRepository) CreateEntry(ctx context.Context, registration *domain.Registration) error {
 	query := `

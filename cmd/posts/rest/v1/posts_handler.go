@@ -1,8 +1,10 @@
 package rest
 
 import (
+	"encoding/json"
 	"net/http"
 
+	"github.com/karaMuha/go-social/posts/application/commands"
 	ports "github.com/karaMuha/go-social/posts/application/ports/driver"
 )
 
@@ -17,5 +19,16 @@ func NewPostsHandlerV1(app ports.IApplication) PostsHandlerV1 {
 }
 
 func (h PostsHandlerV1) PostCreationHandler(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "endpoint not implemented yet", http.StatusNotImplemented)
+	var requestBody commands.CreatePostDto
+	err := json.NewDecoder(r.Body).Decode(&requestBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = h.app.CreatePost(r.Context(), &requestBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 }

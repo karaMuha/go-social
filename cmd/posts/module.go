@@ -6,6 +6,7 @@ import (
 
 	"github.com/karaMuha/go-social/internal/monolith"
 	"github.com/karaMuha/go-social/posts/application"
+	"github.com/karaMuha/go-social/posts/postgres"
 	"github.com/karaMuha/go-social/posts/rest/v1"
 )
 
@@ -13,13 +14,15 @@ type Module struct{}
 
 func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 	// setup driven adapters
+	postsRepository := postgres.NewPostsRepository(mono.DB())
 
 	// setup application
-	app := application.New()
+	app := application.New(postsRepository)
 
 	// setup driver adapters
 	postsHandlerV1 := rest.NewPostsHandlerV1(app)
 	setupRoutes(mono.Mux(), postsHandlerV1)
+
 	return nil
 }
 

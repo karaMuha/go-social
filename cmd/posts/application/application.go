@@ -1,18 +1,31 @@
 package application
 
-import ports "github.com/karaMuha/go-social/posts/application/ports/driver"
+import (
+	"github.com/karaMuha/go-social/posts/application/commands"
+	"github.com/karaMuha/go-social/posts/application/domain"
+	"github.com/karaMuha/go-social/posts/application/ports/driven"
+	"github.com/karaMuha/go-social/posts/application/ports/driver"
+)
 
 type Application struct {
-	Commands
-	Queries
+	appCommands
+	appQueries
 }
 
-type Commands struct{}
+type appCommands struct {
+	commands.CreatePostCommand
+}
 
-type Queries struct{}
+type appQueries struct{}
 
-var _ ports.IApplication = (*Application)(nil)
+var _ driver.IApplication = (*Application)(nil)
 
-func New() Application {
-	return Application{}
+func New(postsRepository driven.PostsRepository) Application {
+	domain.InitValidator()
+	return Application{
+		appCommands: appCommands{
+			CreatePostCommand: commands.NewCreatePostCommand(postsRepository),
+		},
+		appQueries: appQueries{},
+	}
 }

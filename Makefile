@@ -12,3 +12,6 @@ migrate_create:
 
 migrate_up:
 	migrate -path=./cmd/internal/database/migrate/migrations -database "postgresql://admin:secret@localhost:5432/social_db?sslmode=disable" -verbose up
+
+migrate_down1:
+	migrate -path=./cmd/internal/database/migrate/migrations -database "postgresql://admin:secret@localhost:5432/social_db?sslmode=disable" -verbose down 1
