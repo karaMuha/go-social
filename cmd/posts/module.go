@@ -27,5 +27,5 @@ func setupRoutes(router *http.ServeMux, postsHandlerV1 rest.PostsHandlerV1) {
 	v1 := http.NewServeMux()
 	v1.HandleFunc("POST /posts", postsHandlerV1.PostCreationHandler)
 
-	router.Handle("/v1/", http.StripPrefix("/v", v1))
+	router.Handle("/v1/posts", http.StripPrefix("/v1", v1))
 }

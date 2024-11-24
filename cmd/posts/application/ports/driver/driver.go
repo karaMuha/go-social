@@ -5,6 +5,7 @@ type IApplication interface {
 	IQueries
 }
 
-type ICommands interface{}
+type ICommands interface {
+}
 
 type IQueries interface{}

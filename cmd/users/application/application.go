@@ -13,7 +13,7 @@ type Application struct {
 }
 
 type appCommands struct {
-	commands.RegisterUserCommand
+	commands.SignupUserCommand
 }
 
 type appQueries struct{}
@@ -24,7 +24,7 @@ func New(usersRepo drivenPorts.IUsersRepsitory) Application {
 	domain.InitValidator()
 	return Application{
 		appCommands: appCommands{
-			RegisterUserCommand: commands.NewRegisterUserCommand(usersRepo),
+			SignupUserCommand: commands.NewSignupUserCommand(usersRepo),
 		},
 	}
 }
