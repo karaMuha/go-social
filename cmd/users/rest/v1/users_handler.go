@@ -18,7 +18,7 @@ func NewUsersHandlerV1(app ports.IApplication) UsersHandlerV1 {
 	}
 }
 
-func (h UsersHandlerV1) RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
+func (h UsersHandlerV1) UserRegistrationHandler(w http.ResponseWriter, r *http.Request) {
 	var requestBody commands.RegisterUserDto
 	err := json.NewDecoder(r.Body).Decode(&requestBody)
 	if err != nil {

@@ -13,6 +13,6 @@ type Queries struct{}
 
 var _ ports.IApplication = (*Application)(nil)
 
-func New() *Application {
-	return &Application{}
+func New() Application {
+	return Application{}
 }
