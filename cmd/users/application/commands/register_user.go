@@ -25,12 +25,12 @@ func NewRegisterUserCommand(usersRepo ports.IUsersRepsitory) RegisterUserCommand
 }
 
 func (c RegisterUserCommand) RegisterUser(ctx context.Context, cmd RegisterUserDto) error {
-	user, err := domain.RegisterUser(cmd.Username, cmd.Email, cmd.Password)
+	registration, err := domain.RegisterUser(cmd.Username, cmd.Email, cmd.Password)
 	if err != nil {
 		return fmt.Errorf("error registering user: %w", err)
 	}
 
-	err = c.usersRepo.Register(ctx, user)
+	err = c.usersRepo.CreateEntry(ctx, registration)
 	if err != nil {
 		return fmt.Errorf("error registering user: %w", err)
 	}
