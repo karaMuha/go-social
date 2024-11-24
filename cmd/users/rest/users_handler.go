@@ -4,15 +4,15 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/karaMuha/go-social/users/application"
 	"github.com/karaMuha/go-social/users/application/commands"
+	ports "github.com/karaMuha/go-social/users/application/ports/driver"
 )
 
 type UsersHandler struct {
-	app application.Application
+	app ports.IApplication
 }
 
-func NewUsersHandler(app application.Application) UsersHandler {
+func NewUsersHandler(app ports.IApplication) UsersHandler {
 	return UsersHandler{
 		app: app,
 	}
