@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type User struct {
+type Registration struct {
 	ID        string    `json:"id"`
 	Username  string    `json:"username" validate:"required"`
 	Email     string    `json:"email" validate:"required,email"`
@@ -12,8 +12,8 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func RegisterUser(username, email, password string) (*User, error) {
-	user := User{
+func RegisterUser(username, email, password string) (*Registration, error) {
+	user := Registration{
 		Username:  username,
 		Email:     email,
 		Password:  password,

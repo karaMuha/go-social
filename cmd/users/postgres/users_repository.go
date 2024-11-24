@@ -23,7 +23,7 @@ func NewUsersRepository(db *sql.DB) UsersRepository {
 
 var _ ports.IUsersRepsitory = (*UsersRepository)(nil)
 
-func (r UsersRepository) Register(ctx context.Context, user *domain.User) error {
+func (r UsersRepository) CreateEntry(ctx context.Context, registration *domain.Registration) error {
 	query := `
 		INSERT INTO users (email, username, user_password, created_at)
 		VALUES ($1, $2, $3, $4)
@@ -33,7 +33,15 @@ func (r UsersRepository) Register(ctx context.Context, user *domain.User) error 
 	defer cancel()
 
 	var id string
-	err := r.db.QueryRowContext(ctx, query, user.Email, user.Username, user.Password, user.CreatedAt).Scan(&id)
+	err := r.db.QueryRowContext(
+		ctx,
+		query,
+		registration.Email,
+		registration.Username,
+		registration.Password,
+		registration.CreatedAt,
+	).Scan(&id)
+
 	if err != nil {
 		if strings.Contains(err.Error(), "unique constraint") {
 			if strings.Contains(err.Error(), "email") {
@@ -49,7 +57,7 @@ func (r UsersRepository) Register(ctx context.Context, user *domain.User) error 
 	return nil
 }
 
-func (r UsersRepository) GetByID(ctx context.Context, userID string) (*domain.User, error) {
+func (r UsersRepository) GetByID(ctx context.Context, userID string) (*domain.Registration, error) {
 	query := `
 		SELECT * FROM users
 		WHERE id = $1
@@ -58,7 +66,7 @@ func (r UsersRepository) GetByID(ctx context.Context, userID string) (*domain.Us
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var user domain.User
+	var user domain.Registration
 	err := r.db.QueryRowContext(ctx, query, userID).Scan(
 		&user.ID,
 		&user.Email,
@@ -76,7 +84,7 @@ func (r UsersRepository) GetByID(ctx context.Context, userID string) (*domain.Us
 	return &user, nil
 }
 
-func (r UsersRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
+func (r UsersRepository) GetByEmail(ctx context.Context, email string) (*domain.Registration, error) {
 	query := `
 		SELECT * FROM users
 		WHERE email = $1
@@ -85,7 +93,7 @@ func (r UsersRepository) GetByEmail(ctx context.Context, email string) (*domain.
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var user domain.User
+	var user domain.Registration
 	err := r.db.QueryRowContext(ctx, query, email).Scan(
 		&user.ID,
 		&user.Email,
@@ -103,7 +111,7 @@ func (r UsersRepository) GetByEmail(ctx context.Context, email string) (*domain.
 	return &user, nil
 }
 
-func (r UsersRepository) Delete(ctx context.Context, userID string) error {
+func (r UsersRepository) DeleteEntry(ctx context.Context, userID string) error {
 	query := `
 		DELETE FROM users
 		WHERE id = $1
