@@ -25,8 +25,8 @@ var _ driven.IUsersRepsitory = (*UsersRepository)(nil)
 
 func (r UsersRepository) CreateEntry(ctx context.Context, registration *domain.Registration) error {
 	query := `
-		INSERT INTO users (email, username, user_password, created_at)
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO users (email, username, user_password, registration_token, created_at)
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id
 	`
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
@@ -39,6 +39,7 @@ func (r UsersRepository) CreateEntry(ctx context.Context, registration *domain.R
 		registration.Email,
 		registration.Username,
 		registration.Password,
+		registration.RegistrationToken,
 		registration.CreatedAt,
 	).Scan(&id)
 
