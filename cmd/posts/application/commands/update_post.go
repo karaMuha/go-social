@@ -2,7 +2,6 @@ package commands
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/karaMuha/go-social/posts/application/ports/driven"
@@ -31,10 +30,15 @@ func (c UpdatePostCommand) UpdatePost(ctx context.Context, cmd *UpdatePostDto) e
 		return fmt.Errorf("error updating post: %v", err)
 	}
 
-	if cmd.UserID != post.UserID {
-		return errors.New("error updating post: insufficient permission")
+	err = post.Update(cmd.Title, cmd.Content, cmd.UserID)
+	if err != nil {
+		return fmt.Errorf("error updating post: %v", err)
 	}
 
-	post.Update(cmd.Title, cmd.Content)
+	err = c.postsRepository.UpdateEntry(ctx, post)
+	if err != nil {
+		return fmt.Errorf("error updating post: %v", err)
+	}
+
 	return nil
 }

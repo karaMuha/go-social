@@ -16,6 +16,7 @@ type IApplication interface {
 type ICommands interface {
 	CreatePost(ctx context.Context, cmd *commands.CreatePostDto) error
 	UpdatePost(ctx context.Context, cmd *commands.UpdatePostDto) error
+	DeletePost(ctx context.Context, cmd *commands.DeletePostDto) error
 }
 
 type IQueries interface {

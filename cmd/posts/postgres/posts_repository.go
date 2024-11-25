@@ -64,3 +64,36 @@ func (r PostsRepository) GetByID(ctx context.Context, postID string) (*domain.Po
 
 	return &post, nil
 }
+
+func (r PostsRepository) UpdateEntry(ctx context.Context, post *domain.Post) error {
+	query := `
+		UPDATE posts
+		SET title = $1, content = $2, updated_at = $3
+		WHERE id = $4
+	`
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := r.db.ExecContext(ctx, query, post.Title, post.Content, post.UpdatedAt, post.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r PostsRepository) DeleteEntry(ctx context.Context, postID string) error {
+	query := `
+		DELETE FROM posts
+		WHERE id = $1
+	`
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := r.db.ExecContext(ctx, query, postID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

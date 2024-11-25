@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 
@@ -71,11 +70,25 @@ func (h PostsHandlerV1) HandleUpdatePost(w http.ResponseWriter, r *http.Request)
 	cmdParams.ID = r.PathValue("id")
 	cmdParams.UserID = ""
 
-	err = h.app.UpdatePost(context.Background(), &cmdParams)
+	err = h.app.UpdatePost(r.Context(), &cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func (h PostsHandlerV1) HandleDeletePost(w http.ResponseWriter, r *http.Request) {
+	var cmdParams commands.DeletePostDto
+	cmdParams.ID = r.PathValue("id")
+	cmdParams.UserID = ""
+
+	err := h.app.DeletePost(r.Context(), &cmdParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	http.Error(w, "not implemented yet", http.StatusNotImplemented)
 }

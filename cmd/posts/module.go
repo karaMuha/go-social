@@ -31,6 +31,7 @@ func setupRoutes(router *http.ServeMux, postsHandlerV1 rest.PostsHandlerV1) {
 	v1.HandleFunc("POST /posts", postsHandlerV1.HandleCreatePost)
 	v1.HandleFunc("GET /posts/{id}", postsHandlerV1.HandleGetPost)
 	v1.HandleFunc("PUT /posts/{id}", postsHandlerV1.HandleUpdatePost)
+	v1.HandleFunc("DELETE /posts/{id}", postsHandlerV1.HandleDeletePost)
 
 	router.Handle("/v1/posts", http.StripPrefix("/v1", v1))
 }

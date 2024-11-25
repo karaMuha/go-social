@@ -16,6 +16,7 @@ type Application struct {
 type appCommands struct {
 	commands.CreatePostCommand
 	commands.UpdatePostCommand
+	commands.DeletePostCommand
 }
 
 type appQueries struct {
@@ -30,6 +31,7 @@ func New(postsRepository driven.PostsRepository) Application {
 		appCommands: appCommands{
 			CreatePostCommand: commands.NewCreatePostCommand(postsRepository),
 			UpdatePostCommand: commands.NewUpdatePostCommand(postsRepository),
+			DeletePostCommand: commands.NewDeletePostCommand(postsRepository),
 		},
 		appQueries: appQueries{
 			GetPostQuery: queries.NewGetPostQuery(postsRepository),
