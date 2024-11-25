@@ -2,6 +2,8 @@ package domain
 
 import (
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Registration struct {
@@ -24,6 +26,13 @@ func Signup(username, email, password string) (*Registration, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		return nil, err
+	}
+
+	user.Password = string(hashedPassword)
 
 	return &user, nil
 }
