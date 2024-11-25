@@ -15,6 +15,7 @@ type Application struct {
 
 type appCommands struct {
 	commands.CreatePostCommand
+	commands.UpdatePostCommand
 }
 
 type appQueries struct {
@@ -28,6 +29,7 @@ func New(postsRepository driven.PostsRepository) Application {
 	return Application{
 		appCommands: appCommands{
 			CreatePostCommand: commands.NewCreatePostCommand(postsRepository),
+			UpdatePostCommand: commands.NewUpdatePostCommand(postsRepository),
 		},
 		appQueries: appQueries{
 			GetPostQuery: queries.NewGetPostQuery(postsRepository),

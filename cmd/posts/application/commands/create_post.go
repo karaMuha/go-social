@@ -2,6 +2,7 @@ package commands
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/karaMuha/go-social/posts/application/domain"
 	"github.com/karaMuha/go-social/posts/application/ports/driven"
@@ -24,14 +25,14 @@ func NewCreatePostCommand(postsRepository driven.PostsRepository) CreatePostComm
 }
 
 func (c CreatePostCommand) CreatePost(ctx context.Context, cmd *CreatePostDto) error {
-	post, err := domain.Create(cmd.Title, cmd.UserID, cmd.Content)
+	post, err := domain.CreatePost(cmd.Title, cmd.UserID, cmd.Content)
 	if err != nil {
-		return err
+		return fmt.Errorf("error creating post: %v", err)
 	}
 
 	err = c.postsRepository.CreateEntry(ctx, post)
 	if err != nil {
-		return err
+		return fmt.Errorf("error creating post: %v", err)
 	}
 
 	return nil

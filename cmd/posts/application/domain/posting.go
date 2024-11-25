@@ -11,7 +11,7 @@ type Post struct {
 	CreatedAt time.Time
 }
 
-func Create(title string, userID string, content string) (*Post, error) {
+func CreatePost(title string, userID string, content string) (*Post, error) {
 	post := Post{
 		Title:     title,
 		UserID:    userID,
@@ -26,4 +26,16 @@ func Create(title string, userID string, content string) (*Post, error) {
 	}
 
 	return &post, nil
+}
+
+func (p *Post) Update(title string, content string) {
+	if title != "" {
+		p.Title = title
+	}
+
+	if content != "" {
+		p.Content = content
+	}
+
+	p.UpdatedAt = time.Now()
 }

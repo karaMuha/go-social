@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -32,6 +33,8 @@ func (h PostsHandlerV1) HandleCreatePost(w http.ResponseWriter, r *http.Request)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func (h PostsHandlerV1) HandleGetPost(w http.ResponseWriter, r *http.Request) {
@@ -55,4 +58,24 @@ func (h PostsHandlerV1) HandleGetPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(responseJson)
+}
+
+func (h PostsHandlerV1) HandleUpdatePost(w http.ResponseWriter, r *http.Request) {
+	var cmdParams commands.UpdatePostDto
+	err := json.NewDecoder(r.Body).Decode(&cmdParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	cmdParams.ID = r.PathValue("id")
+	cmdParams.UserID = ""
+
+	err = h.app.UpdatePost(context.Background(), &cmdParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
