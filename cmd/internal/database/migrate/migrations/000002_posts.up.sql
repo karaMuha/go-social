@@ -1,14 +1,3 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS citext;
-
-CREATE TABLE IF NOT EXISTS users(
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  email CITEXT UNIQUE NOT NULL,
-  username TEXT UNIQUE NOT NULL,
-  user_password TEXT NOT NULL,
-  created_at timestamp(0) with time zone NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS posts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title text NOT NULL,

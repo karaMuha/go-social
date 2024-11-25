@@ -4,21 +4,21 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/karaMuha/go-social/users/application"
 	"github.com/karaMuha/go-social/users/application/commands"
+	ports "github.com/karaMuha/go-social/users/application/ports/driver"
 )
 
-type UsersHandler struct {
-	app application.Application
+type UsersHandlerV1 struct {
+	app ports.IApplication
 }
 
-func NewUsersHandler(app application.Application) UsersHandler {
-	return UsersHandler{
+func NewUsersHandlerV1(app ports.IApplication) UsersHandlerV1 {
+	return UsersHandlerV1{
 		app: app,
 	}
 }
 
-func (h UsersHandler) RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
+func (h UsersHandlerV1) UserSignupHandler(w http.ResponseWriter, r *http.Request) {
 	var requestBody commands.RegisterUserDto
 	err := json.NewDecoder(r.Body).Decode(&requestBody)
 	if err != nil {
@@ -26,7 +26,7 @@ func (h UsersHandler) RegisterUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = h.app.RegisterUser(r.Context(), requestBody)
+	err = h.app.SignupUser(r.Context(), requestBody)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

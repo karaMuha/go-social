@@ -1,4 +1,4 @@
-package ports
+package driver
 
 import (
 	"context"
@@ -12,7 +12,7 @@ type IApplication interface {
 }
 
 type ICommands interface {
-	RegisterUser(ctx context.Context, cmd commands.RegisterUserDto) error
+	SignupUser(ctx context.Context, cmd commands.RegisterUserDto) error
 }
 
 type IQueries interface{}
