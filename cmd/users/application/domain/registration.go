@@ -12,7 +12,7 @@ type Registration struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func RegisterUser(username, email, password string) (*Registration, error) {
+func Signup(username, email, password string) (*Registration, error) {
 	user := Registration{
 		Username:  username,
 		Email:     email,

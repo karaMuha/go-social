@@ -14,21 +14,18 @@ type RegisterUserDto struct {
 	Password string
 }
 
-type RegisterUserCommand struct {
+type SignupUserCommand struct {
 	usersRepo ports.IUsersRepsitory
 }
 
-func NewRegisterUserCommand(usersRepo ports.IUsersRepsitory) RegisterUserCommand {
-	return RegisterUserCommand{
+func NewSignupUserCommand(usersRepo ports.IUsersRepsitory) SignupUserCommand {
+	return SignupUserCommand{
 		usersRepo: usersRepo,
 	}
 }
 
-// Check within the domain logic if email and username already exist.
-// Currently these checks depend on the postgres implementation.
-// Take case insensivity for email (and username?) into account.
-func (c RegisterUserCommand) RegisterUser(ctx context.Context, cmd RegisterUserDto) error {
-	registration, err := domain.RegisterUser(cmd.Username, cmd.Email, cmd.Password)
+func (c SignupUserCommand) SignupUser(ctx context.Context, cmd RegisterUserDto) error {
+	registration, err := domain.Signup(cmd.Username, cmd.Email, cmd.Password)
 	if err != nil {
 		return fmt.Errorf("error registering user: %w", err)
 	}
