@@ -17,7 +17,7 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 	usersRepository := postgres.NewUsersRepository(mono.DB())
 
 	// setup application
-	app := application.New(usersRepository)
+	app := application.New(usersRepository, mono.MailServer())
 
 	// setup driver adapters
 	usersHandlerV1 := rest.NewUsersHandlerV1(app)

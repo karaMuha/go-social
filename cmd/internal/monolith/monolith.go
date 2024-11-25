@@ -6,20 +6,23 @@ import (
 	"net/http"
 
 	"github.com/karaMuha/go-social/internal/config"
+	"github.com/karaMuha/go-social/internal/mailer"
 )
 
 type IMonolith interface {
 	Config() config.Config
 	DB() *sql.DB
 	Mux() *http.ServeMux
+	MailServer() mailer.Mailer
 }
 
 type monolith struct {
-	cfg     config.Config
-	db      *sql.DB
-	mux     *http.ServeMux
-	context context.Context
-	modules []Module
+	cfg        config.Config
+	db         *sql.DB
+	mux        *http.ServeMux
+	mailServer mailer.Mailer
+	context    context.Context
+	modules    []Module
 }
 
 type Module interface {
@@ -28,13 +31,14 @@ type Module interface {
 
 var _ IMonolith = (*monolith)(nil)
 
-func NewMonolith(cfg config.Config, db *sql.DB, mux *http.ServeMux, modules []Module) monolith {
+func NewMonolith(cfg config.Config, db *sql.DB, mux *http.ServeMux, mailServer mailer.Mailer, modules []Module) monolith {
 	return monolith{
-		cfg:     cfg,
-		db:      db,
-		mux:     mux,
-		context: context.Background(),
-		modules: modules,
+		cfg:        cfg,
+		db:         db,
+		mux:        mux,
+		mailServer: mailServer,
+		context:    context.Background(),
+		modules:    modules,
 	}
 }
 
@@ -58,4 +62,8 @@ func (m *monolith) DB() *sql.DB {
 
 func (m *monolith) Mux() *http.ServeMux {
 	return m.mux
+}
+
+func (m *monolith) MailServer() mailer.Mailer {
+	return m.mailServer
 }
