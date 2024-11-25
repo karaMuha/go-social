@@ -5,6 +5,7 @@ import (
 	"github.com/karaMuha/go-social/posts/application/domain"
 	"github.com/karaMuha/go-social/posts/application/ports/driven"
 	"github.com/karaMuha/go-social/posts/application/ports/driver"
+	"github.com/karaMuha/go-social/posts/application/queries"
 )
 
 type Application struct {
@@ -16,7 +17,9 @@ type appCommands struct {
 	commands.CreatePostCommand
 }
 
-type appQueries struct{}
+type appQueries struct {
+	queries.GetPostQuery
+}
 
 var _ driver.IApplication = (*Application)(nil)
 
@@ -26,6 +29,8 @@ func New(postsRepository driven.PostsRepository) Application {
 		appCommands: appCommands{
 			CreatePostCommand: commands.NewCreatePostCommand(postsRepository),
 		},
-		appQueries: appQueries{},
+		appQueries: appQueries{
+			GetPostQuery: queries.NewGetPostQuery(postsRepository),
+		},
 	}
 }

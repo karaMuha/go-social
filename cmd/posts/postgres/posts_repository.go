@@ -38,3 +38,29 @@ func (r PostsRepository) CreateEntry(ctx context.Context, post *domain.Post) err
 
 	return nil
 }
+
+func (r PostsRepository) GetByID(ctx context.Context, postID string) (*domain.Post, error) {
+	query := `
+		SELECT *
+		FROM posts
+		WHERE id = $1
+	`
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	var post domain.Post
+	err := r.db.QueryRowContext(ctx, query, postID).Scan(
+		&post.ID,
+		&post.Title,
+		&post.UserID,
+		&post.Content,
+		&post.UpdatedAt,
+		&post.CreatedAt,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &post, nil
+}

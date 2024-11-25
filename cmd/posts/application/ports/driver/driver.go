@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/karaMuha/go-social/posts/application/commands"
+	"github.com/karaMuha/go-social/posts/application/domain"
+	"github.com/karaMuha/go-social/posts/application/queries"
 )
 
 type IApplication interface {
@@ -12,7 +14,9 @@ type IApplication interface {
 }
 
 type ICommands interface {
-	CreatePost(ctx context.Context, post *commands.CreatePostDto) error
+	CreatePost(ctx context.Context, cmd *commands.CreatePostDto) error
 }
 
-type IQueries interface{}
+type IQueries interface {
+	GetPost(ctx context.Context, query *queries.GetPostDto) (*domain.Post, error)
+}

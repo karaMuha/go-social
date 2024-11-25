@@ -28,7 +28,7 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 
 func setupRoutes(router *http.ServeMux, postsHandlerV1 rest.PostsHandlerV1) {
 	v1 := http.NewServeMux()
-	v1.HandleFunc("POST /posts", postsHandlerV1.PostCreationHandler)
+	v1.HandleFunc("POST /posts", postsHandlerV1.HandleCreatePost)
 
 	router.Handle("/v1/posts", http.StripPrefix("/v1", v1))
 }

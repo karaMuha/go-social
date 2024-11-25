@@ -8,4 +8,5 @@ import (
 
 type PostsRepository interface {
 	CreateEntry(ctx context.Context, post *domain.Post) error
+	GetByID(ctx context.Context, postID string) (*domain.Post, error)
 }
