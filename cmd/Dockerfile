@@ -15,6 +15,6 @@ FROM alpine:latest
 
 RUN mkdir /app
 
-COPY --from=builder /app/go_social /app/private_key.pem /app/
+COPY --from=builder /app/go_social /app/private_key.pem /app/internal/mailer/templates /app/
 
 CMD [ "/app/go_social" ]
