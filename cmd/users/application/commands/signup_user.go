@@ -27,7 +27,7 @@ func NewSignupUserCommand(usersRepo ports.IUsersRepsitory, mailServer mailer.Mai
 	}
 }
 
-func (c SignupUserCommand) SignupUser(ctx context.Context, cmd RegisterUserDto) error {
+func (c SignupUserCommand) SignupUser(ctx context.Context, cmd *RegisterUserDto) error {
 	registration, err := domain.Signup(cmd.Username, cmd.Email, cmd.Password)
 	if err != nil {
 		return fmt.Errorf("error registering user: %w", err)

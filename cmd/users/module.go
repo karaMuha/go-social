@@ -28,7 +28,8 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 
 func setupRoutes(router *http.ServeMux, usersHandlerV1 rest.UsersHandlerV1) {
 	v1 := http.NewServeMux()
-	v1.HandleFunc("POST /users", usersHandlerV1.UserSignupHandler)
+	v1.HandleFunc("POST /users/", usersHandlerV1.UserSignupHandler)
+	v1.HandleFunc("PUT /users/confirm", usersHandlerV1.UserConfirmHandler)
 
-	router.Handle("/v1/users", http.StripPrefix("/v1", v1))
+	router.Handle("/v1/users/", http.StripPrefix("/v1", v1))
 }

@@ -15,6 +15,7 @@ type Application struct {
 
 type appCommands struct {
 	commands.SignupUserCommand
+	commands.ConfirmUserCommand
 }
 
 type appQueries struct{}
@@ -25,7 +26,8 @@ func New(usersRepo driven.IUsersRepsitory, mailServer mailer.Mailer) Application
 	domain.InitValidator()
 	return Application{
 		appCommands: appCommands{
-			SignupUserCommand: commands.NewSignupUserCommand(usersRepo, mailServer),
+			SignupUserCommand:  commands.NewSignupUserCommand(usersRepo, mailServer),
+			ConfirmUserCommand: commands.NewConfirmUserCommand(usersRepo),
 		},
 		appQueries: appQueries{},
 	}

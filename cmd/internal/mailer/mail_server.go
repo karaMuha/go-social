@@ -74,7 +74,7 @@ func NewMailServer() *MailServer {
 }
 
 func (m *MailServer) SendRegistrationMail(address, token string) error {
-	mailMessage := fmt.Sprintf("Please visit localhost:8080/users/confirm/%s/%s to complete your registration", address, token)
+	mailMessage := fmt.Sprintf("Please visit localhost:8080/users/confirm?email=%s&token=%s to complete your registration", address, token)
 
 	mail := Mail{
 		To:      address,

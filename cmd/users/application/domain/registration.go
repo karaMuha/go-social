@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"time"
 
 	"github.com/thanhpk/randstr"
@@ -13,6 +14,7 @@ type Registration struct {
 	Email             string `json:"email" validate:"required,email"`
 	Password          string `json:"-" validate:"required"`
 	RegistrationToken string
+	Active            bool
 	CreatedAt         time.Time `json:"created_at"`
 }
 
@@ -40,4 +42,16 @@ func Signup(username, email, password string) (*Registration, error) {
 	user.RegistrationToken = registrationToken
 
 	return &user, nil
+}
+
+func Activate(user *Registration, token string) error {
+	if user.Active {
+		return errors.New("user already active")
+	}
+
+	if user.RegistrationToken != token {
+		return errors.New("wrong token")
+	}
+
+	return nil
 }

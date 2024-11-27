@@ -12,7 +12,8 @@ type IApplication interface {
 }
 
 type ICommands interface {
-	SignupUser(ctx context.Context, cmd commands.RegisterUserDto) error
+	SignupUser(ctx context.Context, cmd *commands.RegisterUserDto) error
+	ConfirmUser(ctx context.Context, cmd *commands.ConfirmUserDto) error
 }
 
 type IQueries interface{}
