@@ -25,8 +25,8 @@ var _ driven.IUsersRepsitory = (*UsersRepository)(nil)
 
 func (r UsersRepository) CreateEntry(ctx context.Context, registration *domain.Registration) error {
 	query := `
-		INSERT INTO users (email, username, user_password, created_at)
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO users (email, username, user_password, registration_token, created_at)
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id
 	`
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
@@ -39,6 +39,7 @@ func (r UsersRepository) CreateEntry(ctx context.Context, registration *domain.R
 		registration.Email,
 		registration.Username,
 		registration.Password,
+		registration.RegistrationToken,
 		registration.CreatedAt,
 	).Scan(&id)
 
@@ -59,7 +60,8 @@ func (r UsersRepository) CreateEntry(ctx context.Context, registration *domain.R
 
 func (r UsersRepository) GetByID(ctx context.Context, userID string) (*domain.Registration, error) {
 	query := `
-		SELECT * FROM users
+		SELECT *
+		FROM users
 		WHERE id = $1
 	`
 
@@ -73,6 +75,8 @@ func (r UsersRepository) GetByID(ctx context.Context, userID string) (*domain.Re
 		&user.Username,
 		&user.Password,
 		&user.CreatedAt,
+		&user.RegistrationToken,
+		&user.Active,
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -86,7 +90,8 @@ func (r UsersRepository) GetByID(ctx context.Context, userID string) (*domain.Re
 
 func (r UsersRepository) GetByEmail(ctx context.Context, email string) (*domain.Registration, error) {
 	query := `
-		SELECT * FROM users
+		SELECT *
+		FROM users
 		WHERE email = $1
 	`
 
@@ -100,6 +105,8 @@ func (r UsersRepository) GetByEmail(ctx context.Context, email string) (*domain.
 		&user.Username,
 		&user.Password,
 		&user.CreatedAt,
+		&user.RegistrationToken,
+		&user.Active,
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -111,6 +118,20 @@ func (r UsersRepository) GetByEmail(ctx context.Context, email string) (*domain.
 	return &user, nil
 }
 
+func (r UsersRepository) ActivateUser(ctx context.Context, userID string) error {
+	query := `
+		UPDATE users
+		SET active = true
+		WHERE id = $1
+	`
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := r.db.ExecContext(ctx, query, userID)
+
+	return err
+}
+
 func (r UsersRepository) DeleteEntry(ctx context.Context, userID string) error {
 	query := `
 		DELETE FROM users
@@ -120,9 +141,7 @@ func (r UsersRepository) DeleteEntry(ctx context.Context, userID string) error {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	if _, err := r.db.ExecContext(ctx, query, userID); err != nil {
-		return err
-	}
+	_, err := r.db.ExecContext(ctx, query, userID)
 
-	return nil
+	return err
 }

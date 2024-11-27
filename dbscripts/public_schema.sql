@@ -19,3 +19,7 @@ CREATE TABLE IF NOT EXISTS posts (
 );
 
 ALTER TABLE posts ADD CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id);
+
+ALTER TABLE users ADD registration_token TEXT;
+
+ALTER TABLE users ADD active BOOLEAN DEFAULT FALSE;

@@ -6,6 +6,7 @@ import (
 
 	"github.com/karaMuha/go-social/internal/config"
 	"github.com/karaMuha/go-social/internal/database/postgres"
+	"github.com/karaMuha/go-social/internal/mailer"
 	"github.com/karaMuha/go-social/internal/monolith"
 	"github.com/karaMuha/go-social/posts"
 	"github.com/karaMuha/go-social/users"
@@ -40,7 +41,10 @@ func run() error {
 		&posts.Module{},
 	}
 
-	m := monolith.NewMonolith(*config, db, router, modules)
+	log.Println("Starting mail server")
+	mailServer := mailer.NewMailServer()
+
+	m := monolith.NewMonolith(*config, db, router, mailServer, modules)
 
 	log.Println("Initializing modules")
 	err = m.InitModules()

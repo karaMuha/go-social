@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/karaMuha/go-social/users/application/commands"
+	"github.com/karaMuha/go-social/users/application/domain"
 )
 
 type IApplication interface {
@@ -12,7 +13,10 @@ type IApplication interface {
 }
 
 type ICommands interface {
-	SignupUser(ctx context.Context, cmd commands.RegisterUserDto) error
+	SignupUser(ctx context.Context, cmd *commands.RegisterUserDto) error
+	ConfirmUser(ctx context.Context, cmd *commands.ConfirmUserDto) error
 }
 
-type IQueries interface{}
+type IQueries interface {
+	GetUserByEmail(ctx context.Context, email string) (*domain.Registration, error)
+}

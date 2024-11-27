@@ -14,6 +14,14 @@ services:
       DB_CONNECTION: "host=postgres port=5432 user=admin password=secret dbname=social_db sslmode=disable"
       DB_DRIVER: "postgres"
       PRIVATE_KEY_PATH: "private_key.pem"
+      MAIL_DOMAIN: localhost
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_ENCRYPTION: none
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      MAIL_FROMNAME: "Max Mustermann"
+      MAIL_FROMADDRESS: "max.mustermann@test.com"
     depends_on:
       - postgres
 
@@ -33,3 +41,9 @@ services:
     volumes:
       - ./db_data/postgres/:/var/lib/postgresql/data
       - ./dbscripts/public_schema.sql:/docker-entrypoint-initdb.d/public_schema.sql
+  
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - "1025:1025"
+      - "8025:8025"
