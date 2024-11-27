@@ -6,6 +6,7 @@ import (
 	"github.com/karaMuha/go-social/users/application/domain"
 	"github.com/karaMuha/go-social/users/application/ports/driven"
 	"github.com/karaMuha/go-social/users/application/ports/driver"
+	"github.com/karaMuha/go-social/users/application/queries"
 )
 
 type Application struct {
@@ -18,7 +19,9 @@ type appCommands struct {
 	commands.ConfirmUserCommand
 }
 
-type appQueries struct{}
+type appQueries struct {
+	queries.GetUserByEmailQuery
+}
 
 var _ driver.IApplication = (*Application)(nil)
 
@@ -29,6 +32,8 @@ func New(usersRepo driven.IUsersRepsitory, mailServer mailer.Mailer) Application
 			SignupUserCommand:  commands.NewSignupUserCommand(usersRepo, mailServer),
 			ConfirmUserCommand: commands.NewConfirmUserCommand(usersRepo),
 		},
-		appQueries: appQueries{},
+		appQueries: appQueries{
+			GetUserByEmailQuery: queries.NewGetUserByEmailQuery(usersRepo),
+		},
 	}
 }

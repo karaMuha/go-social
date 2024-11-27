@@ -47,3 +47,22 @@ func (h UsersHandlerV1) UserConfirmHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 }
+
+func (h UsersHandlerV1) UserGetByEmailHandler(w http.ResponseWriter, r *http.Request) {
+	email := r.PathValue("email")
+	user, err := h.app.GetUserByEmail(r.Context(), email)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	responseJson, err := json.Marshal(user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+}
