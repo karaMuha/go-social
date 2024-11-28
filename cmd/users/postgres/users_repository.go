@@ -23,7 +23,7 @@ func NewUsersRepository(db *sql.DB) UsersRepository {
 
 var _ driven.IUsersRepsitory = (*UsersRepository)(nil)
 
-func (r UsersRepository) CreateEntry(ctx context.Context, registration *domain.Registration) error {
+func (r UsersRepository) CreateEntry(ctx context.Context, registration *domain.Registration) (string, error) {
 	query := `
 		INSERT INTO users (email, username, user_password, registration_token, created_at)
 		VALUES ($1, $2, $3, $4, $5)
@@ -46,16 +46,16 @@ func (r UsersRepository) CreateEntry(ctx context.Context, registration *domain.R
 	if err != nil {
 		if strings.Contains(err.Error(), "unique constraint") {
 			if strings.Contains(err.Error(), "email") {
-				return errors.New("email already exists")
+				return "", errors.New("email already exists")
 			}
 			if strings.Contains(err.Error(), "username") {
-				return errors.New("username already exists")
+				return "", errors.New("username already exists")
 			}
 		}
-		return err
+		return "", err
 	}
 
-	return nil
+	return id, nil
 }
 
 func (r UsersRepository) GetByID(ctx context.Context, userID string) (*domain.Registration, error) {

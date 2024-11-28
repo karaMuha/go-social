@@ -30,17 +30,18 @@ func NewSignupUserCommand(usersRepo ports.IUsersRepsitory, mailServer mailer.Mai
 func (c SignupUserCommand) SignupUser(ctx context.Context, cmd *SignupUserDto) error {
 	registration, err := domain.Signup(cmd.Username, cmd.Email, cmd.Password)
 	if err != nil {
-		return fmt.Errorf("error registering user: %w", err)
+		return fmt.Errorf("error signing up user: %w", err)
 	}
 
-	err = c.usersRepo.CreateEntry(ctx, registration)
+	userID, err := c.usersRepo.CreateEntry(ctx, registration)
 	if err != nil {
-		return fmt.Errorf("error registering user: %w", err)
+		return fmt.Errorf("error signing up user: %w", err)
 	}
 
 	err = c.mailer.SendRegistrationMail(registration.Email, registration.RegistrationToken)
 	if err != nil {
-		return fmt.Errorf("error registering user: %w", err)
+		c.usersRepo.DeleteEntry(ctx, userID)
+		return fmt.Errorf("error signing up user: %w", err)
 	}
 
 	return nil
