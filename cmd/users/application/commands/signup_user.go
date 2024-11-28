@@ -9,7 +9,7 @@ import (
 	ports "github.com/karaMuha/go-social/users/application/ports/driven"
 )
 
-type RegisterUserDto struct {
+type SignupUserDto struct {
 	Email    string
 	Username string
 	Password string
@@ -27,7 +27,7 @@ func NewSignupUserCommand(usersRepo ports.IUsersRepsitory, mailServer mailer.Mai
 	}
 }
 
-func (c SignupUserCommand) SignupUser(ctx context.Context, cmd *RegisterUserDto) error {
+func (c SignupUserCommand) SignupUser(ctx context.Context, cmd *SignupUserDto) error {
 	registration, err := domain.Signup(cmd.Username, cmd.Email, cmd.Password)
 	if err != nil {
 		return fmt.Errorf("error registering user: %w", err)

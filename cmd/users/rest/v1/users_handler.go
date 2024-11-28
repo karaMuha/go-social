@@ -19,7 +19,7 @@ func NewUsersHandlerV1(app ports.IApplication) UsersHandlerV1 {
 }
 
 func (h UsersHandlerV1) UserSignupHandler(w http.ResponseWriter, r *http.Request) {
-	var cmdParams commands.RegisterUserDto
+	var cmdParams commands.SignupUserDto
 	err := json.NewDecoder(r.Body).Decode(&cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
