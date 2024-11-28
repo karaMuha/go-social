@@ -1,0 +1,7 @@
+registration process
+  sign up with email
+  confirm email address
+  submit account details
+authentication process
+  login with email and password
+  refresh access token
