@@ -8,6 +8,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const REGISTRATION_TOKEN_LENGTH = 64
+
 type Registration struct {
 	ID                string `json:"id"`
 	Username          string `json:"username" validate:"required"`
@@ -18,6 +20,9 @@ type Registration struct {
 	CreatedAt         time.Time `json:"created_at"`
 }
 
+// email and username must be case insensitively unique
+// currently this is handled by the postgres implementation
+// which makes the business logic depend on postgres
 func Signup(username, email, password string) (*Registration, error) {
 	user := Registration{
 		Username:  username,
@@ -38,7 +43,7 @@ func Signup(username, email, password string) (*Registration, error) {
 
 	user.Password = string(hashedPassword)
 
-	registrationToken := randstr.String(64)
+	registrationToken := randstr.String(REGISTRATION_TOKEN_LENGTH)
 	user.RegistrationToken = registrationToken
 
 	return &user, nil
@@ -49,8 +54,12 @@ func Activate(user *Registration, token string) error {
 		return errors.New("user already active")
 	}
 
+	if len(user.RegistrationToken) != REGISTRATION_TOKEN_LENGTH {
+		return errors.New("internal server error, token is funky")
+	}
+
 	if user.RegistrationToken != token {
-		return errors.New("wrong token")
+		return errors.New("access denied")
 	}
 
 	return nil
