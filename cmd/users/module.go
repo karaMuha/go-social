@@ -36,7 +36,7 @@ func setupRoutes(
 	usersV1 := http.NewServeMux()
 	usersV1.HandleFunc("POST /", usersHandlerV1.SignupHandler)
 	usersV1.HandleFunc("PUT /confirm", usersHandlerV1.ConfirmHandler)
-	usersV1.HandleFunc("GET /{email}", usersHandlerV1.GetByEmailHandler)
+	usersV1.HandleFunc("GET /email/{email}", usersHandlerV1.GetByEmailHandler)
 	usersV1.HandleFunc("GET /{id}", usersHandlerV1.GetByIdHandler)
 
 	router.Handle("/v1/users/", http.StripPrefix("/v1/users", usersV1))
@@ -46,5 +46,5 @@ func setupRoutes(
 	followersV1.HandleFunc("DELETE /", followersHandlerV1.UnfollowHandler)
 	followersV1.HandleFunc("GET /{id}", followersHandlerV1.GetFollowersOfUser)
 
-	router.Handle("/v1/followers", http.StripPrefix("/v1/followers", followersV1))
+	router.Handle("/v1/followers/", http.StripPrefix("/v1/followers", followersV1))
 }

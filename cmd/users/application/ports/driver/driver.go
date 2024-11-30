@@ -22,5 +22,5 @@ type ICommands interface {
 type IQueries interface {
 	GetUserByEmail(ctx context.Context, email string) (*domain.Registration, error)
 	GetUserByID(ctx context.Context, userID string) (*domain.Registration, error)
-	GetFollowersOfUser(ctx context.Context, followedID string) ([]*string, error)
+	GetFollowersOfUser(ctx context.Context, userID string) ([]*string, error)
 }

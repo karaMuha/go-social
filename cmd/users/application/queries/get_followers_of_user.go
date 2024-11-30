@@ -16,6 +16,6 @@ func NewGetFollowerQuery(followersRepository driven.IFollowersRepository) GetFol
 	}
 }
 
-func (q GetFollowerQuery) GetFollowersOfUser(ctx context.Context, followedID string) ([]*string, error) {
-	return q.followersRepository.GetFollowersOfUser(ctx, followedID)
+func (q GetFollowerQuery) GetFollowersOfUser(ctx context.Context, userID string) ([]*string, error) {
+	return q.followersRepository.GetFollowersOfUser(ctx, userID)
 }

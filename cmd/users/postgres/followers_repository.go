@@ -65,7 +65,7 @@ func (r FollowersRepository) GetFollowersOfUser(ctx context.Context, userID stri
 
 	var followerID string
 	for rows.Next() {
-		err = rows.Scan(&userID)
+		err = rows.Scan(&followerID)
 		if err != nil {
 			return
 		}
