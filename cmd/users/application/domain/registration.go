@@ -23,11 +23,13 @@ type Registration struct {
 // email and username must be case insensitively unique
 // currently this is handled by the postgres implementation
 // which makes the business logic depend on postgres
+// one solution to this could be to save email and username always in lowercase
 func Signup(username, email, password string) (*Registration, error) {
 	user := Registration{
 		Username:  username,
 		Email:     email,
 		Password:  password,
+		Active:    false,
 		CreatedAt: time.Now(),
 	}
 

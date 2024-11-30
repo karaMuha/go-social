@@ -1,8 +1,13 @@
 package driven
 
-import "context"
+import (
+	"context"
+
+	"github.com/karaMuha/go-social/users/application/domain"
+)
 
 type IFollowersRepository interface {
-	Follow(ctx context.Context, userID, followerID string) error
-	Unfollow(ctx context.Context, followerID, userID string) error
+	Follow(ctx context.Context, following *domain.Following) error
+	Unfollow(ctx context.Context, userID string, followedUserID string) error
+	GetFollowersOfUser(ctx context.Context, followedID string) ([]*string, error)
 }

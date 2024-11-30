@@ -40,7 +40,7 @@ func (c SignupUserCommand) SignupUser(ctx context.Context, cmd *SignupUserDto) e
 
 	err = c.mailer.SendRegistrationMail(registration.Email, registration.RegistrationToken)
 	if err != nil {
-		// transaction rollback?
+		// transaction with rollback?
 		c.usersRepo.DeleteEntry(ctx, userID)
 		return fmt.Errorf("error signing up user: %w", err)
 	}

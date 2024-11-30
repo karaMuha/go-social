@@ -17,23 +17,33 @@ type Application struct {
 type appCommands struct {
 	commands.SignupUserCommand
 	commands.ConfirmUserCommand
+	commands.FollowUserCommand
+	commands.UnfollowUserCommand
 }
 
 type appQueries struct {
 	queries.GetUserByEmailQuery
+	queries.GetFollowerQuery
 }
 
 var _ driver.IApplication = (*Application)(nil)
 
-func New(usersRepo driven.IUsersRepsitory, mailServer mailer.Mailer) Application {
+func New(
+	usersRepo driven.IUsersRepsitory,
+	followersRepository driven.IFollowersRepository,
+	mailServer mailer.Mailer,
+) Application {
 	domain.InitValidator()
 	return Application{
 		appCommands: appCommands{
-			SignupUserCommand:  commands.NewSignupUserCommand(usersRepo, mailServer),
-			ConfirmUserCommand: commands.NewConfirmUserCommand(usersRepo),
+			SignupUserCommand:   commands.NewSignupUserCommand(usersRepo, mailServer),
+			ConfirmUserCommand:  commands.NewConfirmUserCommand(usersRepo),
+			FollowUserCommand:   commands.NewFollowUserCommand(followersRepository),
+			UnfollowUserCommand: commands.NewUnfollowUserCommand(followersRepository),
 		},
 		appQueries: appQueries{
 			GetUserByEmailQuery: queries.NewGetUserByEmailQuery(usersRepo),
+			GetFollowerQuery:    queries.NewGetFollowerQuery(followersRepository),
 		},
 	}
 }

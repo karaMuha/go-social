@@ -5,6 +5,7 @@ registration
 authentication
   login with email and password
   refresh access token
+  logout
 following
   follow user
   unfollow user
