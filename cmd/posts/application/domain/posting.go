@@ -36,14 +36,15 @@ func (p *Post) Update(title string, content string, userID string) error {
 		return errors.New("access denied")
 	}
 
-	if title != "" {
-		p.Title = title
+	if title == "" {
+		return errors.New("title cannot be empty")
+	}
+	if content == "" {
+		return errors.New("content cannot be empty")
 	}
 
-	if content != "" {
-		p.Content = content
-	}
-
+	p.Title = title
+	p.Content = content
 	p.UpdatedAt = time.Now()
 
 	return nil

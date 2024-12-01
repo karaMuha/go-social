@@ -18,8 +18,8 @@ func NewUsersHandlerV1(app ports.IApplication) UsersHandlerV1 {
 	}
 }
 
-func (h UsersHandlerV1) UserSignupHandler(w http.ResponseWriter, r *http.Request) {
-	var cmdParams commands.RegisterUserDto
+func (h UsersHandlerV1) SignupHandler(w http.ResponseWriter, r *http.Request) {
+	var cmdParams commands.SignupUserDto
 	err := json.NewDecoder(r.Body).Decode(&cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -33,7 +33,7 @@ func (h UsersHandlerV1) UserSignupHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
-func (h UsersHandlerV1) UserConfirmHandler(w http.ResponseWriter, r *http.Request) {
+func (h UsersHandlerV1) ConfirmHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.URL.Query().Get("email")
 	token := r.URL.Query().Get("token")
 	cmdParams := commands.ConfirmUserDto{
@@ -48,9 +48,28 @@ func (h UsersHandlerV1) UserConfirmHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func (h UsersHandlerV1) UserGetByEmailHandler(w http.ResponseWriter, r *http.Request) {
+func (h UsersHandlerV1) GetByEmailHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.PathValue("email")
 	user, err := h.app.GetUserByEmail(r.Context(), email)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	responseJson, err := json.Marshal(user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
+}
+
+func (h UsersHandlerV1) GetByIdHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	user, err := h.app.GetUserByID(r.Context(), id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

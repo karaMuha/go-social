@@ -28,10 +28,10 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 
 func setupRoutes(router *http.ServeMux, postsHandlerV1 rest.PostsHandlerV1) {
 	postsV1 := http.NewServeMux()
-	postsV1.HandleFunc("POST /posts", postsHandlerV1.HandleCreatePost)
-	postsV1.HandleFunc("GET /posts/{id}", postsHandlerV1.HandleGetPost)
-	postsV1.HandleFunc("PUT /posts/{id}", postsHandlerV1.HandleUpdatePost)
-	postsV1.HandleFunc("DELETE /posts/{id}", postsHandlerV1.HandleDeletePost)
+	postsV1.HandleFunc("POST /", postsHandlerV1.HandleCreatePost)
+	postsV1.HandleFunc("GET /{id}", postsHandlerV1.HandleGetPost)
+	postsV1.HandleFunc("PUT /{id}", postsHandlerV1.HandleUpdatePost)
+	postsV1.HandleFunc("DELETE /{id}", postsHandlerV1.HandleDeletePost)
 
-	router.Handle("/v1/posts", http.StripPrefix("/v1", postsV1))
+	router.Handle("/v1/posts/", http.StripPrefix("/v1/posts", postsV1))
 }
