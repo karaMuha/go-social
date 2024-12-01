@@ -111,13 +111,13 @@ func (m *MailServer) SendRegistrationMail(address, token string) error {
 	err = email.Error
 
 	if err != nil {
-		return err
+		return fmt.Errorf("error creating confirmation mail: %v", err)
 	}
 
 	err = email.Send(m.client)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("error sending confirmation mail: %v", err)
 	}
 
 	return nil
