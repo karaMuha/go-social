@@ -19,6 +19,7 @@ type appCommands struct {
 	commands.ConfirmUserCommand
 	commands.FollowUserCommand
 	commands.UnfollowUserCommand
+	commands.LoginUserCommand
 }
 
 type appQueries struct {
@@ -42,6 +43,7 @@ func New(
 			ConfirmUserCommand:  commands.NewConfirmUserCommand(usersRepo),
 			FollowUserCommand:   commands.NewFollowUserCommand(followersRepository),
 			UnfollowUserCommand: commands.NewUnfollowUserCommand(followersRepository),
+			LoginUserCommand:    commands.NewLoginUserCommand(usersRepo),
 		},
 		appQueries: appQueries{
 			GetUserByEmailQuery: queries.NewGetUserByEmailQuery(usersRepo),

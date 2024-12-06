@@ -3,6 +3,7 @@ package rest
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/karaMuha/go-social/users/application/commands"
 	ports "github.com/karaMuha/go-social/users/application/ports/driver"
@@ -84,4 +85,27 @@ func (h UsersHandlerV1) GetByIdHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(responseJson)
+}
+
+func (h UsersHandlerV1) LoginHandler(w http.ResponseWriter, r *http.Request) {
+	var cmdParams commands.LoginUserDto
+	err := json.NewDecoder(r.Body).Decode(&cmdParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	accessToken, err := h.app.LoginUser(r.Context(), &cmdParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "access_token",
+		Value:    accessToken,
+		Secure:   true,
+		HttpOnly: true,
+		Expires:  time.Now().Add(time.Hour),
+	})
 }
