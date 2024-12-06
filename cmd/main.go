@@ -14,6 +14,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
+//	@title		Go Social API
+//	@version	1.0
+
+// @license.name	MIT
 func main() {
 	if err := run(); err != nil {
 		log.Fatal(err)

@@ -17,6 +17,7 @@ type ICommands interface {
 	ConfirmUser(ctx context.Context, cmd *commands.ConfirmUserDto) error
 	FollowUser(ctx context.Context, cmd *commands.FollowUserDto) error
 	UnfollowUser(ctx context.Context, cmd *commands.UnfollowUserDto) error
+	LoginUser(ctx context.Context, cmd *commands.LoginUserDto) (string, error)
 }
 
 type IQueries interface {

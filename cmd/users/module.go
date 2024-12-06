@@ -18,7 +18,12 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 	followersRepository := postgres.NewFollowersRepository(mono.DB())
 
 	// setup application
-	app := application.New(usersRepository, followersRepository, mono.MailServer())
+	app := application.New(
+		usersRepository,
+		followersRepository,
+		mono.MailServer(),
+		mono.Config().PrivateKeyPath,
+	)
 
 	// setup driver adapters
 	usersHandlerV1 := rest.NewUsersHandlerV1(app)
