@@ -32,8 +32,10 @@ func New(
 	usersRepo driven.IUsersRepsitory,
 	followersRepository driven.IFollowersRepository,
 	mailServer mailer.Mailer,
+	privateKeyPath string,
 ) Application {
 	domain.InitValidator()
+	domain.InitPrivateKey(privateKeyPath)
 	return Application{
 		appCommands: appCommands{
 			SignupUserCommand:   commands.NewSignupUserCommand(usersRepo, mailServer),
