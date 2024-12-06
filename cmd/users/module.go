@@ -43,6 +43,7 @@ func setupRoutes(
 	usersV1.HandleFunc("PUT /confirm", usersHandlerV1.ConfirmHandler)
 	usersV1.HandleFunc("GET /email/{email}", usersHandlerV1.GetByEmailHandler)
 	usersV1.HandleFunc("GET /{id}", usersHandlerV1.GetByIdHandler)
+	usersV1.HandleFunc("POST /login", usersHandlerV1.LoginHandler)
 
 	router.Handle("/v1/users/", http.StripPrefix("/v1/users", usersV1))
 

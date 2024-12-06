@@ -13,7 +13,7 @@ services:
       REST_PORT: ":8080"
       DB_CONNECTION: "host=postgres port=5432 user=admin password=secret dbname=social_db sslmode=disable"
       DB_DRIVER: "postgres"
-      PRIVATE_KEY_PATH: "private_key.pem"
+      PRIVATE_KEY_PATH: "./app/private_key.pem"
       MAIL_DOMAIN: localhost
       MAIL_HOST: mailhog
       MAIL_PORT: 1025
