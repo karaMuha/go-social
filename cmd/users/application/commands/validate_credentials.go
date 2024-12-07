@@ -8,31 +8,31 @@ import (
 	"github.com/karaMuha/go-social/users/application/ports/driven"
 )
 
-type LoginUserDto struct {
+type ValidateCredentialsDto struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type LoginUserCommand struct {
+type ValidateUserCommand struct {
 	usersRepository driven.IUsersRepsitory
 }
 
-func NewLoginUserCommand(usersRepository driven.IUsersRepsitory) LoginUserCommand {
-	return LoginUserCommand{
+func NewValidateUserCommand(usersRepository driven.IUsersRepsitory) ValidateUserCommand {
+	return ValidateUserCommand{
 		usersRepository: usersRepository,
 	}
 }
 
-func (c LoginUserCommand) LoginUser(ctx context.Context, cmd *LoginUserDto) (string, error) {
+func (c ValidateUserCommand) ValidateUser(ctx context.Context, cmd *ValidateCredentialsDto) (string, error) {
 	user, err := c.usersRepository.GetByEmail(ctx, cmd.Email)
 	if err != nil {
 		return "", fmt.Errorf("error logging in user: %v", err)
 	}
 
-	token, err := domain.Login(user.ID, user.Password, cmd.Password)
+	err = domain.ValidatePassword(user.Password, cmd.Password)
 	if err != nil {
 		return "", fmt.Errorf("error logging in user: %v", err)
 	}
 
-	return token, nil
+	return user.ID, nil
 }

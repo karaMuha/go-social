@@ -2,7 +2,7 @@ registration
   sign up with email
   confirm email address
   submit account details
-authentication
+session
   login with email and password
   refresh access token
   logout

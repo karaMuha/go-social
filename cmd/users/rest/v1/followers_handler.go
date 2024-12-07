@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/karaMuha/go-social/internal/middleware"
 	"github.com/karaMuha/go-social/users/application/commands"
 	"github.com/karaMuha/go-social/users/application/ports/driver"
 )
@@ -26,6 +27,8 @@ func (h FollowersHandlerV1) FollowHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
+
 	err = h.app.FollowUser(r.Context(), &cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -40,6 +43,8 @@ func (h FollowersHandlerV1) UnfollowHandler(w http.ResponseWriter, r *http.Reque
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
 
 	err = h.app.UnfollowUser(r.Context(), &cmdParams)
 	if err != nil {

@@ -9,9 +9,9 @@ import (
 
 type UpdatePostDto struct {
 	ID      string
-	Title   string
+	Title   string `json:"title"`
 	UserID  string
-	Content string
+	Content string `json:"content"`
 }
 
 type UpdatePostCommand struct {

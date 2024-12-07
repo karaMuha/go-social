@@ -7,10 +7,6 @@ import (
 	"github.com/karaMuha/go-social/posts/application/ports/driven"
 )
 
-type GetPostDto struct {
-	PostID string
-}
-
 type GetPostQuery struct {
 	postsRepository driven.PostsRepository
 }
@@ -21,6 +17,6 @@ func NewGetPostQuery(postsRepository driven.PostsRepository) GetPostQuery {
 	}
 }
 
-func (q GetPostQuery) GetPost(ctx context.Context, query *GetPostDto) (*domain.Post, error) {
-	return q.postsRepository.GetByID(ctx, query.PostID)
+func (q GetPostQuery) GetPost(ctx context.Context, postID string) (*domain.Post, error) {
+	return q.postsRepository.GetByID(ctx, postID)
 }

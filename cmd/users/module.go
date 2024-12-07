@@ -26,7 +26,7 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 	)
 
 	// setup driver adapters
-	usersHandlerV1 := rest.NewUsersHandlerV1(app)
+	usersHandlerV1 := rest.NewUsersHandlerV1(app, mono.TokenProvider())
 	followersHandlerV1 := rest.NewFollowersHandlerV1(app)
 	setupRoutes(mono.Mux(), usersHandlerV1, followersHandlerV1)
 

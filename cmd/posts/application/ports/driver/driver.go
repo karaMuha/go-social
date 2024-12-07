@@ -5,7 +5,6 @@ import (
 
 	"github.com/karaMuha/go-social/posts/application/commands"
 	"github.com/karaMuha/go-social/posts/application/domain"
-	"github.com/karaMuha/go-social/posts/application/queries"
 )
 
 type IApplication interface {
@@ -20,5 +19,5 @@ type ICommands interface {
 }
 
 type IQueries interface {
-	GetPost(ctx context.Context, query *queries.GetPostDto) (*domain.Post, error)
+	GetPost(ctx context.Context, postID string) (*domain.Post, error)
 }
