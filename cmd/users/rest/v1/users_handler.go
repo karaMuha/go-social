@@ -5,17 +5,20 @@ import (
 	"net/http"
 	"time"
 
+	authtoken "github.com/karaMuha/go-social/internal/auth_token"
 	"github.com/karaMuha/go-social/users/application/commands"
 	ports "github.com/karaMuha/go-social/users/application/ports/driver"
 )
 
 type UsersHandlerV1 struct {
-	app ports.IApplication
+	app           ports.IApplication
+	tokenProvider authtoken.ITokenProvider
 }
 
-func NewUsersHandlerV1(app ports.IApplication) UsersHandlerV1 {
+func NewUsersHandlerV1(app ports.IApplication, tokenProvider authtoken.ITokenProvider) UsersHandlerV1 {
 	return UsersHandlerV1{
-		app: app,
+		app:           app,
+		tokenProvider: tokenProvider,
 	}
 }
 
@@ -88,14 +91,20 @@ func (h UsersHandlerV1) GetByIdHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UsersHandlerV1) LoginHandler(w http.ResponseWriter, r *http.Request) {
-	var cmdParams commands.LoginUserDto
+	var cmdParams commands.ValidateCredentialsDto
 	err := json.NewDecoder(r.Body).Decode(&cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	accessToken, err := h.app.LoginUser(r.Context(), &cmdParams)
+	userID, err := h.app.ValidateUser(r.Context(), &cmdParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	accessToken, err := h.tokenProvider.GenerateToken(userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -107,5 +116,6 @@ func (h UsersHandlerV1) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Secure:   true,
 		HttpOnly: true,
 		Expires:  time.Now().Add(time.Hour),
+		Path:     "/",
 	})
 }

@@ -8,7 +8,7 @@ import (
 )
 
 type UnfollowUserDto struct {
-	UserID         string `json:"user_id"`
+	UserID         string
 	FollowedUserID string `json:"followed_user_id"`
 }
 

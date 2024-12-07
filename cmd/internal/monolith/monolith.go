@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"net/http"
 
+	authtoken "github.com/karaMuha/go-social/internal/auth_token"
 	"github.com/karaMuha/go-social/internal/config"
 	"github.com/karaMuha/go-social/internal/mailer"
 )
@@ -14,15 +15,17 @@ type IMonolith interface {
 	DB() *sql.DB
 	Mux() *http.ServeMux
 	MailServer() mailer.Mailer
+	TokenProvider() authtoken.ITokenProvider
 }
 
 type monolith struct {
-	cfg        config.Config
-	db         *sql.DB
-	mux        *http.ServeMux
-	mailServer mailer.Mailer
-	context    context.Context
-	modules    []Module
+	cfg           config.Config
+	db            *sql.DB
+	mux           *http.ServeMux
+	mailServer    mailer.Mailer
+	context       context.Context
+	modules       []Module
+	tokenProvider authtoken.ITokenProvider
 }
 
 type Module interface {
@@ -31,14 +34,22 @@ type Module interface {
 
 var _ IMonolith = (*monolith)(nil)
 
-func NewMonolith(cfg config.Config, db *sql.DB, mux *http.ServeMux, mailServer mailer.Mailer, modules []Module) monolith {
+func NewMonolith(cfg config.Config,
+	db *sql.DB,
+	mux *http.ServeMux,
+	mailServer mailer.Mailer,
+	modules []Module,
+	tokenGenerator authtoken.ITokenProvider,
+) monolith {
+	setProtectedRoutes()
 	return monolith{
-		cfg:        cfg,
-		db:         db,
-		mux:        mux,
-		mailServer: mailServer,
-		context:    context.Background(),
-		modules:    modules,
+		cfg:           cfg,
+		db:            db,
+		mux:           mux,
+		mailServer:    mailServer,
+		context:       context.Background(),
+		modules:       modules,
+		tokenProvider: tokenGenerator,
 	}
 }
 
@@ -66,4 +77,8 @@ func (m *monolith) Mux() *http.ServeMux {
 
 func (m *monolith) MailServer() mailer.Mailer {
 	return m.mailServer
+}
+
+func (m *monolith) TokenProvider() authtoken.ITokenProvider {
+	return m.tokenProvider
 }

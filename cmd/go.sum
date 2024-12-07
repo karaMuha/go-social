@@ -48,6 +48,8 @@ github.com/vanng822/css v1.0.1/go.mod h1:tcnB1voG49QhCrwq1W0w5hhGasvOg+VQp9i9H1r
 github.com/vanng822/go-premailer v1.22.0 h1:5gG92q3nG3BwcfUUDzrSDbYDbpwYC/lri4nba+vhdJQ=
 github.com/vanng822/go-premailer v1.22.0/go.mod h1:K7DxRBW6AxdZUTqmW9jU6041CtfAWiP9uSXm2WmMB1k=
 github.com/vanng822/r2router v0.0.0-20150523112421-1023140a4f30/go.mod h1:1BVq8p2jVr55Ost2PkZWDrG86PiJ/0lxqcXoAcGxvWU=
+github.com/vodkaslime/wildcard v0.0.0-20220926070406-71dac9214330 h1:j5r+ms5kNWzpQLxS7dp91ZBO1ngYHaPcndGBDnJXh9Y=
+github.com/vodkaslime/wildcard v0.0.0-20220926070406-71dac9214330/go.mod h1:PWF6pLM/J+2ogKdCI57QJee76z+hcTXm9WDUNMqfNTw=
 github.com/xhit/go-simple-mail/v2 v2.16.0 h1:ouGy/Ww4kuaqu2E2UrDw7SvLaziWTB60ICLkIkNVccA=
 github.com/xhit/go-simple-mail/v2 v2.16.0/go.mod h1:b7P5ygho6SYE+VIqpxA6QkYfv4teeyG4MKqB3utRu98=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=

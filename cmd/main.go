@@ -4,9 +4,11 @@ import (
 	"log"
 	"net/http"
 
+	authtoken "github.com/karaMuha/go-social/internal/auth_token"
 	"github.com/karaMuha/go-social/internal/config"
 	"github.com/karaMuha/go-social/internal/database/postgres"
 	"github.com/karaMuha/go-social/internal/mailer"
+	"github.com/karaMuha/go-social/internal/middleware"
 	"github.com/karaMuha/go-social/internal/monolith"
 	"github.com/karaMuha/go-social/posts"
 	"github.com/karaMuha/go-social/users"
@@ -38,6 +40,14 @@ func run() error {
 	}
 	defer db.Close()
 
+	log.Println("Reading private key")
+	tokenProvider := authtoken.NewTokenProvider(config.PrivateKeyPath)
+
+	log.Println("Creating middleware stack")
+	middlewareStack := middleware.CreateStack(
+		middleware.AuthMiddleware,
+	)
+
 	router := http.NewServeMux()
 
 	modules := []monolith.Module{
@@ -48,7 +58,7 @@ func run() error {
 	log.Println("Starting mail server")
 	mailServer := mailer.NewMailServer()
 
-	m := monolith.NewMonolith(*config, db, router, mailServer, modules)
+	m := monolith.NewMonolith(*config, db, router, mailServer, modules, tokenProvider)
 
 	log.Println("Initializing modules")
 	err = m.InitModules()
@@ -58,7 +68,7 @@ func run() error {
 
 	server := &http.Server{
 		Addr:    m.Config().RestPort,
-		Handler: m.Mux(),
+		Handler: middlewareStack(m.Mux(), tokenProvider),
 	}
 
 	log.Println("Starting server")
