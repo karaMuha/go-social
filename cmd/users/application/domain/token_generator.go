@@ -11,7 +11,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-var privateKey *rsa.PrivateKey
+var PrivateKey *rsa.PrivateKey
 
 func InitPrivateKey(filename string) error {
 	file, err := os.Open(filename)
@@ -38,19 +38,19 @@ func InitPrivateKey(filename string) error {
 	}
 
 	if key, ok := key.(*rsa.PrivateKey); ok {
-		privateKey = key
+		PrivateKey = key
 		return nil
 	}
 
 	return errors.New("error while reading private key")
 }
 
-func generateJwt(userId string) (string, error) {
+func GenerateJwt(userId string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
 		"sub": userId,
 		"iat": time.Now().Unix(),
 		"exp": time.Now().Add(time.Hour).Unix(),
 	})
 
-	return token.SignedString(privateKey)
+	return token.SignedString(PrivateKey)
 }
