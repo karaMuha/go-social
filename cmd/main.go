@@ -41,7 +41,7 @@ func run() error {
 	defer db.Close()
 
 	log.Println("Reading private key")
-	tokenGenerator := authtoken.NewTokenGenerator(config.PrivateKeyPath)
+	tokenProvider := authtoken.NewTokenProvider(config.PrivateKeyPath)
 
 	log.Println("Creating middleware stack")
 	middlewareStack := middleware.CreateStack(
@@ -58,7 +58,7 @@ func run() error {
 	log.Println("Starting mail server")
 	mailServer := mailer.NewMailServer()
 
-	m := monolith.NewMonolith(*config, db, router, mailServer, modules, tokenGenerator)
+	m := monolith.NewMonolith(*config, db, router, mailServer, modules, tokenProvider)
 
 	log.Println("Initializing modules")
 	err = m.InitModules()
@@ -68,7 +68,7 @@ func run() error {
 
 	server := &http.Server{
 		Addr:    m.Config().RestPort,
-		Handler: middlewareStack(m.Mux(), tokenGenerator),
+		Handler: middlewareStack(m.Mux(), tokenProvider),
 	}
 
 	log.Println("Starting server")

@@ -19,7 +19,7 @@ type appCommands struct {
 	commands.ConfirmUserCommand
 	commands.FollowUserCommand
 	commands.UnfollowUserCommand
-	commands.LoginUserCommand
+	commands.ValidateUserCommand
 }
 
 type appQueries struct {
@@ -36,14 +36,13 @@ func New(
 	privateKeyPath string,
 ) Application {
 	domain.InitValidator()
-	domain.InitPrivateKey(privateKeyPath)
 	return Application{
 		appCommands: appCommands{
 			SignupUserCommand:   commands.NewSignupUserCommand(usersRepo, mailServer),
 			ConfirmUserCommand:  commands.NewConfirmUserCommand(usersRepo),
 			FollowUserCommand:   commands.NewFollowUserCommand(followersRepository),
 			UnfollowUserCommand: commands.NewUnfollowUserCommand(followersRepository),
-			LoginUserCommand:    commands.NewLoginUserCommand(usersRepo),
+			ValidateUserCommand: commands.NewValidateUserCommand(usersRepo),
 		},
 		appQueries: appQueries{
 			GetUserByEmailQuery: queries.NewGetUserByEmailQuery(usersRepo),

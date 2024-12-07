@@ -15,17 +15,17 @@ type IMonolith interface {
 	DB() *sql.DB
 	Mux() *http.ServeMux
 	MailServer() mailer.Mailer
-	TokenGenerator() authtoken.TokenGenerator
+	TokenProvider() authtoken.ITokenProvider
 }
 
 type monolith struct {
-	cfg            config.Config
-	db             *sql.DB
-	mux            *http.ServeMux
-	mailServer     mailer.Mailer
-	context        context.Context
-	modules        []Module
-	tokenGenerator authtoken.TokenGenerator
+	cfg           config.Config
+	db            *sql.DB
+	mux           *http.ServeMux
+	mailServer    mailer.Mailer
+	context       context.Context
+	modules       []Module
+	tokenProvider authtoken.ITokenProvider
 }
 
 type Module interface {
@@ -39,17 +39,17 @@ func NewMonolith(cfg config.Config,
 	mux *http.ServeMux,
 	mailServer mailer.Mailer,
 	modules []Module,
-	tokenGenerator authtoken.TokenGenerator,
+	tokenGenerator authtoken.ITokenProvider,
 ) monolith {
 	setProtectedRoutes()
 	return monolith{
-		cfg:            cfg,
-		db:             db,
-		mux:            mux,
-		mailServer:     mailServer,
-		context:        context.Background(),
-		modules:        modules,
-		tokenGenerator: tokenGenerator,
+		cfg:           cfg,
+		db:            db,
+		mux:           mux,
+		mailServer:    mailServer,
+		context:       context.Background(),
+		modules:       modules,
+		tokenProvider: tokenGenerator,
 	}
 }
 
@@ -79,6 +79,6 @@ func (m *monolith) MailServer() mailer.Mailer {
 	return m.mailServer
 }
 
-func (m *monolith) TokenGenerator() authtoken.TokenGenerator {
-	return m.tokenGenerator
+func (m *monolith) TokenProvider() authtoken.ITokenProvider {
+	return m.tokenProvider
 }
