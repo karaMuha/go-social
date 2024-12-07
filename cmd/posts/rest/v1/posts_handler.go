@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/karaMuha/go-social/internal/middleware"
 	"github.com/karaMuha/go-social/posts/application/commands"
 	ports "github.com/karaMuha/go-social/posts/application/ports/driver"
-	"github.com/karaMuha/go-social/posts/application/queries"
 )
 
 type PostsHandlerV1 struct {
@@ -27,6 +27,8 @@ func (h PostsHandlerV1) HandleCreatePost(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
+
 	err = h.app.CreatePost(r.Context(), &cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -38,11 +40,8 @@ func (h PostsHandlerV1) HandleCreatePost(w http.ResponseWriter, r *http.Request)
 
 func (h PostsHandlerV1) HandleGetPost(w http.ResponseWriter, r *http.Request) {
 	postID := r.PathValue("id")
-	queryParams := queries.GetPostDto{
-		PostID: postID,
-	}
 
-	post, err := h.app.GetPost(r.Context(), &queryParams)
+	post, err := h.app.GetPost(r.Context(), postID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -68,7 +67,7 @@ func (h PostsHandlerV1) HandleUpdatePost(w http.ResponseWriter, r *http.Request)
 	}
 
 	cmdParams.ID = r.PathValue("id")
-	cmdParams.UserID = ""
+	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
 
 	err = h.app.UpdatePost(r.Context(), &cmdParams)
 	if err != nil {
@@ -82,7 +81,7 @@ func (h PostsHandlerV1) HandleUpdatePost(w http.ResponseWriter, r *http.Request)
 func (h PostsHandlerV1) HandleDeletePost(w http.ResponseWriter, r *http.Request) {
 	var cmdParams commands.DeletePostDto
 	cmdParams.ID = r.PathValue("id")
-	cmdParams.UserID = ""
+	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
 
 	err := h.app.DeletePost(r.Context(), &cmdParams)
 	if err != nil {
@@ -90,5 +89,5 @@ func (h PostsHandlerV1) HandleDeletePost(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	http.Error(w, "not implemented yet", http.StatusNotImplemented)
+	w.WriteHeader(http.StatusOK)
 }

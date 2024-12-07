@@ -10,7 +10,7 @@ import (
 
 type CreatePostDto struct {
 	Title   string `json:"title"`
-	UserID  string `json:"user_id"`
+	UserID  string
 	Content string `json:"content"`
 }
 
