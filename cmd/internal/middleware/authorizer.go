@@ -12,7 +12,7 @@ type contextUserID string
 
 const ContextUserIDKey contextUserID = "userID"
 
-func AuthMiddleware(next http.Handler, tokenProvider authtoken.ITokenProvider) http.Handler {
+func Authorizer(next http.Handler, tokenProvider authtoken.ITokenProvider) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestTarget := r.Method + " " + r.URL.Path
 

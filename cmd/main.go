@@ -16,10 +16,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-//	@title		Go Social API
-//	@version	1.0
-
-// @license.name	MIT
 func main() {
 	if err := run(); err != nil {
 		log.Fatal(err)
@@ -43,12 +39,10 @@ func run() error {
 	log.Println("Reading private key")
 	tokenProvider := authtoken.NewTokenProvider(config.PrivateKeyPath)
 
-	log.Println("Creating middleware stack")
-	middlewareStack := middleware.CreateStack(
-		middleware.AuthMiddleware,
-	)
-
 	router := http.NewServeMux()
+	registerHealthCheck(router)
+	rateLimiter := middleware.RateLimiter(router)
+	authorizer := middleware.Authorizer(rateLimiter, tokenProvider)
 
 	modules := []monolith.Module{
 		&users.Module{},
@@ -68,7 +62,7 @@ func run() error {
 
 	server := &http.Server{
 		Addr:    m.Config().RestPort,
-		Handler: middlewareStack(m.Mux(), tokenProvider),
+		Handler: authorizer,
 	}
 
 	log.Println("Starting server")
@@ -78,4 +72,10 @@ func run() error {
 	}
 
 	return nil
+}
+
+func registerHealthCheck(router *http.ServeMux) {
+	router.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
 }
