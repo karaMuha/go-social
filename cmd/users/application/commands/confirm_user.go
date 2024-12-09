@@ -29,7 +29,7 @@ func (c ConfirmUserCommand) ConfirmUser(ctx context.Context, cmd *ConfirmUserDto
 		return fmt.Errorf("error activating user: %v", err)
 	}
 
-	err = domain.Activate(user, cmd.Token)
+	err = domain.Activate(user.Active, user.RegistrationToken, cmd.Token)
 	if err != nil {
 		return fmt.Errorf("error activating user: %v", err)
 	}
