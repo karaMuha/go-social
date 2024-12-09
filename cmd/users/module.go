@@ -28,13 +28,13 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 	// setup driver adapters
 	usersHandlerV1 := rest.NewUsersHandlerV1(app, mono.TokenProvider())
 	followersHandlerV1 := rest.NewFollowersHandlerV1(app)
-	setupRoutes(mono.Mux(), usersHandlerV1, followersHandlerV1)
+	setupEndpoints(mono.Mux(), usersHandlerV1, followersHandlerV1)
 
 	return nil
 }
 
-func setupRoutes(
-	router *http.ServeMux,
+func setupEndpoints(
+	mux *http.ServeMux,
 	usersHandlerV1 rest.UsersHandlerV1,
 	followersHandlerV1 rest.FollowersHandlerV1,
 ) {
@@ -45,12 +45,12 @@ func setupRoutes(
 	usersV1.HandleFunc("GET /{id}", usersHandlerV1.GetByIdHandler)
 	usersV1.HandleFunc("POST /login", usersHandlerV1.LoginHandler)
 
-	router.Handle("/v1/users/", http.StripPrefix("/v1/users", usersV1))
+	mux.Handle("/v1/users/", http.StripPrefix("/v1/users", usersV1))
 
 	followersV1 := http.NewServeMux()
 	followersV1.HandleFunc("POST /", followersHandlerV1.FollowHandler)
 	followersV1.HandleFunc("DELETE /", followersHandlerV1.UnfollowHandler)
 	followersV1.HandleFunc("GET /{id}", followersHandlerV1.GetFollowersOfUser)
 
-	router.Handle("/v1/followers/", http.StripPrefix("/v1/followers", followersV1))
+	mux.Handle("/v1/followers/", http.StripPrefix("/v1/followers", followersV1))
 }

@@ -11,7 +11,7 @@ import (
 )
 
 type IMonolith interface {
-	Config() config.Config
+	Config() *config.Config
 	DB() *sql.DB
 	Mux() *http.ServeMux
 	MailServer() mailer.Mailer
@@ -19,26 +19,26 @@ type IMonolith interface {
 }
 
 type monolith struct {
-	cfg           config.Config
+	cfg           *config.Config
 	db            *sql.DB
 	mux           *http.ServeMux
 	mailServer    mailer.Mailer
 	context       context.Context
-	modules       []Module
+	modules       []IModule
 	tokenProvider authtoken.ITokenProvider
 }
 
-type Module interface {
+type IModule interface {
 	Startup(ctx context.Context, mono IMonolith) error
 }
 
 var _ IMonolith = (*monolith)(nil)
 
-func NewMonolith(cfg config.Config,
+func NewMonolith(cfg *config.Config,
 	db *sql.DB,
 	mux *http.ServeMux,
 	mailServer mailer.Mailer,
-	modules []Module,
+	modules []IModule,
 	tokenGenerator authtoken.ITokenProvider,
 ) monolith {
 	setProtectedRoutes()
@@ -63,7 +63,7 @@ func (m *monolith) InitModules() error {
 	return nil
 }
 
-func (m *monolith) Config() config.Config {
+func (m *monolith) Config() *config.Config {
 	return m.cfg
 }
 
