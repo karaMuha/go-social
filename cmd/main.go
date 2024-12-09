@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -26,25 +27,25 @@ func run() error {
 	log.Println("Reading config")
 	config, err := config.InitConfig()
 	if err != nil {
-		return err
+		return fmt.Errorf("error while reading config: %v", err)
 	}
 
 	log.Println("Connecting to database")
 	db, err := postgres.ConnectToDb(config.DbDriver, config.DbConnectionString)
 	if err != nil {
-		return err
+		return fmt.Errorf("error while connecting to database: %v", err)
 	}
 	defer db.Close()
 
 	log.Println("Reading private key")
 	tokenProvider := authtoken.NewTokenProvider(config.PrivateKeyPath)
 
-	router := http.NewServeMux()
-	registerHealthCheck(router)
-	rateLimiter := middleware.RateLimiter(router)
+	mux := http.NewServeMux()
+	registerHealthCheck(mux)
+	rateLimiter := middleware.RateLimiter(mux)
 	authorizer := middleware.Authorizer(rateLimiter, tokenProvider)
 
-	modules := []monolith.Module{
+	modules := []monolith.IModule{
 		&users.Module{},
 		&posts.Module{},
 	}
@@ -52,12 +53,12 @@ func run() error {
 	log.Println("Starting mail server")
 	mailServer := mailer.NewMailServer()
 
-	m := monolith.NewMonolith(*config, db, router, mailServer, modules, tokenProvider)
+	m := monolith.NewMonolith(config, db, mux, mailServer, modules, tokenProvider)
 
 	log.Println("Initializing modules")
 	err = m.InitModules()
 	if err != nil {
-		return err
+		return fmt.Errorf("error while initializing modules: %v", err)
 	}
 
 	server := &http.Server{
@@ -68,14 +69,14 @@ func run() error {
 	log.Println("Starting server")
 	err = server.ListenAndServe()
 	if err != nil {
-		return err
+		return fmt.Errorf("error while starting server: %v", err)
 	}
 
 	return nil
 }
 
-func registerHealthCheck(router *http.ServeMux) {
-	router.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+func registerHealthCheck(mux *http.ServeMux) {
+	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 }

@@ -20,10 +20,9 @@ type Registration struct {
 	CreatedAt         time.Time `json:"created_at"`
 }
 
-// email and username must be case insensitively unique
+// email and username must be unique case insensitively
 // currently this is handled by the postgres implementation
-// which makes the business logic depend on postgres
-// one solution to this could be to save email and username always in lowercase
+// which makes the business requirement depend on postgres
 func Signup(username, email, password string) (*Registration, error) {
 	user := Registration{
 		Username:  username,
@@ -51,16 +50,16 @@ func Signup(username, email, password string) (*Registration, error) {
 	return &user, nil
 }
 
-func Activate(user *Registration, token string) error {
-	if user.Active {
+func Activate(active bool, tokenFromDb string, tokenFromRequest string) error {
+	if active {
 		return errors.New("user already active")
 	}
 
-	if len(user.RegistrationToken) != REGISTRATION_TOKEN_LENGTH {
+	if len(tokenFromDb) != REGISTRATION_TOKEN_LENGTH {
 		return errors.New("internal server error, token is funky")
 	}
 
-	if user.RegistrationToken != token {
+	if tokenFromDb != tokenFromRequest {
 		return errors.New("access denied")
 	}
 

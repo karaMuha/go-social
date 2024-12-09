@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"time"
 )
 
@@ -11,6 +12,10 @@ type Following struct {
 }
 
 func Follow(userID string, followedUserID string) (*Following, error) {
+	if userID == followedUserID {
+		return nil, errors.New("you cannot follow yourself")
+	}
+
 	following := Following{
 		UserID:         userID,
 		FollowedUserID: followedUserID,
