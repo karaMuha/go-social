@@ -62,12 +62,41 @@ func TestUpdatePost(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		err := post.Update(test.title, test.content, test.userID)
+		err = post.Update(test.title, test.content, test.userID)
 		if err == nil && test.wantErr {
 			t.Errorf("Update post test error: want error but got none for test case: %s", test.testName)
 		}
 		if err != nil && !test.wantErr {
 			t.Errorf("Update post test error: want no error but got error for test case: %s", test.testName)
+		}
+	}
+}
+
+func TestDeletePost(t *testing.T) {
+	InitValidator()
+	userID := uuid.New()
+	wrongUserID := uuid.New()
+	post, err := CreatePost("This is a Title", userID.String(), "This is the content")
+	if err != nil {
+		t.Errorf("Cannot prepare post for test: %v", err)
+	}
+
+	tests := []struct {
+		testName string
+		userID   string
+		wantErr  bool
+	}{
+		{"TestWrongUserID", wrongUserID.String(), true},
+		{"TestSuccessfulDelete", userID.String(), false},
+	}
+
+	for _, test := range tests {
+		err = post.Delete(test.userID)
+		if err == nil && test.wantErr {
+			t.Errorf("Delete post test error: want error but got none for test case: %s", test.testName)
+		}
+		if err != nil && !test.wantErr {
+			t.Errorf("Delete post test error: want no error but got error for test case: %s", test.testName)
 		}
 	}
 }
