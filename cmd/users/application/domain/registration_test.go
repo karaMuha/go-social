@@ -1,6 +1,10 @@
 package domain
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/thanhpk/randstr"
+)
 
 func TestSignup(t *testing.T) {
 	InitValidator()
@@ -42,6 +46,33 @@ func TestSignup(t *testing.T) {
 			if registration.RegistrationToken == "" {
 				t.Errorf("Signup test error: signup successful but got no registration token for test case %s", test.testName)
 			}
+		}
+	}
+}
+
+func TestActivate(t *testing.T) {
+	tokenFromDb := randstr.String(REGISTRATION_TOKEN_LENGTH)
+	tokenFromRequest := tokenFromDb
+	tests := []struct {
+		testName         string
+		active           bool
+		tokenFromDb      string
+		tokenFromRequest string
+		wantErr          bool
+	}{
+		{"TestUserAlreadyActive", true, tokenFromDb, tokenFromRequest, true},
+		{"TestTokenFromDbFromLength", false, "someRandomString", tokenFromRequest, true},
+		{"TestTokenDoNotMatch", false, tokenFromDb, "wrongToken", true},
+		{"TestSuccessfulActivation", false, tokenFromDb, tokenFromRequest, false},
+	}
+
+	for _, test := range tests {
+		err := Activate(test.active, test.tokenFromDb, test.tokenFromRequest)
+		if err == nil && test.wantErr {
+			t.Errorf("Signup test error: want error but got none for test case: %s", test.testName)
+		}
+		if err != nil && !test.wantErr {
+			t.Errorf("Signup test error: want no error but got error for test case: %s", test.testName)
 		}
 	}
 }
