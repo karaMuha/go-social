@@ -61,7 +61,7 @@ func TestActivate(t *testing.T) {
 		wantErr          bool
 	}{
 		{"TestUserAlreadyActive", true, tokenFromDb, tokenFromRequest, true},
-		{"TestTokenFromDbWrongLength", false, "someRandomString", tokenFromRequest, true},
+		{"TestTokenFromDbWrongLength", false, "tooShortToken", tokenFromRequest, true},
 		{"TestTokenDoNotMatch", false, tokenFromDb, "wrongToken", true},
 		{"TestSuccessfulActivation", false, tokenFromDb, tokenFromRequest, false},
 	}
