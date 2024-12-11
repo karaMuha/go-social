@@ -15,3 +15,8 @@ migrate_up:
 
 migrate_down1:
 	migrate -path=./cmd/internal/database/migrate/migrations -database "postgresql://admin:secret@localhost:5432/social_db?sslmode=disable" -verbose down 1
+
+unit_tests:
+	cd cmd; \
+	go test -v ./posts/application/domain; \
+	go test -v ./users/application/domain
