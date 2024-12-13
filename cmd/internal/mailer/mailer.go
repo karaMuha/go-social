@@ -1,5 +1,5 @@
 package mailer
 
-type Mailer interface {
+type IMailer interface {
 	SendRegistrationMail(email, token string) error
 }

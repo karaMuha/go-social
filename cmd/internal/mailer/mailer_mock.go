@@ -1,15 +1,18 @@
 package mailer
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
-type SuccessMailer struct{}
+type MailerMock struct{}
 
-func (m *SuccessMailer) SendRegistrationMail(email, token string) error {
+// provide "error" as value for parameter token if you want to simulate an error
+// otherwise this function returns nil
+func (m *MailerMock) SendRegistrationMail(email, token string) error {
+	if strings.EqualFold(token, "error") {
+		return errors.New("could not send email")
+	}
+
 	return nil
-}
-
-type FailMailer struct{}
-
-func (m *FailMailer) SendRegistrationMail(email, token string) error {
-	return errors.New("something went wrong")
 }

@@ -32,7 +32,7 @@ var _ driver.IApplication = (*Application)(nil)
 func New(
 	usersRepo driven.IUsersRepsitory,
 	followersRepository driven.IFollowersRepository,
-	mailServer mailer.Mailer,
+	mailServer mailer.IMailer,
 ) Application {
 	domain.InitValidator()
 	return Application{

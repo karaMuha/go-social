@@ -33,7 +33,7 @@ type MailServer struct {
 	client      *simpleMail.SMTPClient
 }
 
-var _ Mailer = (*MailServer)(nil)
+var _ IMailer = (*MailServer)(nil)
 
 func NewMailServer() *MailServer {
 	port, err := strconv.Atoi(os.Getenv("MAIL_PORT"))
