@@ -17,10 +17,10 @@ type SignupUserDto struct {
 
 type SignupUserCommand struct {
 	usersRepo ports.IUsersRepsitory
-	mailer    mailer.Mailer
+	mailer    mailer.IMailer
 }
 
-func NewSignupUserCommand(usersRepo ports.IUsersRepsitory, mailServer mailer.Mailer) SignupUserCommand {
+func NewSignupUserCommand(usersRepo ports.IUsersRepsitory, mailServer mailer.IMailer) SignupUserCommand {
 	return SignupUserCommand{
 		usersRepo: usersRepo,
 		mailer:    mailServer,

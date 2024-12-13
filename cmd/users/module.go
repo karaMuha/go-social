@@ -22,7 +22,6 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 		usersRepository,
 		followersRepository,
 		mono.MailServer(),
-		mono.Config().PrivateKeyPath,
 	)
 
 	// setup driver adapters
