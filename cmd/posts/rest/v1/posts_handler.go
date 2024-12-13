@@ -29,7 +29,7 @@ func (h PostsHandlerV1) HandleCreatePost(w http.ResponseWriter, r *http.Request)
 
 	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
 
-	err = h.app.CreatePost(r.Context(), &cmdParams)
+	_, err = h.app.CreatePost(r.Context(), &cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

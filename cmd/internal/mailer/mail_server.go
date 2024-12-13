@@ -12,10 +12,6 @@ import (
 	simpleMail "github.com/xhit/go-simple-mail/v2"
 )
 
-type Mailer interface {
-	SendRegistrationMail(email, token string) error
-}
-
 type Mail struct {
 	From     string `json:"from"`
 	FromName string `json:"fromName"`
@@ -37,7 +33,7 @@ type MailServer struct {
 	client      *simpleMail.SMTPClient
 }
 
-var _ Mailer = (*MailServer)(nil)
+var _ IMailer = (*MailServer)(nil)
 
 func NewMailServer() *MailServer {
 	port, err := strconv.Atoi(os.Getenv("MAIL_PORT"))

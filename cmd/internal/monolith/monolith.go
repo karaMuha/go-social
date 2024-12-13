@@ -14,7 +14,7 @@ type IMonolith interface {
 	Config() *config.Config
 	DB() *sql.DB
 	Mux() *http.ServeMux
-	MailServer() mailer.Mailer
+	MailServer() mailer.IMailer
 	TokenProvider() authtoken.ITokenProvider
 }
 
@@ -22,7 +22,7 @@ type monolith struct {
 	cfg           *config.Config
 	db            *sql.DB
 	mux           *http.ServeMux
-	mailServer    mailer.Mailer
+	mailServer    mailer.IMailer
 	context       context.Context
 	modules       []IModule
 	tokenProvider authtoken.ITokenProvider
@@ -37,7 +37,7 @@ var _ IMonolith = (*monolith)(nil)
 func NewMonolith(cfg *config.Config,
 	db *sql.DB,
 	mux *http.ServeMux,
-	mailServer mailer.Mailer,
+	mailServer mailer.IMailer,
 	modules []IModule,
 	tokenGenerator authtoken.ITokenProvider,
 ) monolith {
@@ -75,7 +75,7 @@ func (m *monolith) Mux() *http.ServeMux {
 	return m.mux
 }
 
-func (m *monolith) MailServer() mailer.Mailer {
+func (m *monolith) MailServer() mailer.IMailer {
 	return m.mailServer
 }
 
