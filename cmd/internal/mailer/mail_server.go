@@ -12,10 +12,6 @@ import (
 	simpleMail "github.com/xhit/go-simple-mail/v2"
 )
 
-type Mailer interface {
-	SendRegistrationMail(email, token string) error
-}
-
 type Mail struct {
 	From     string `json:"from"`
 	FromName string `json:"fromName"`
