@@ -21,7 +21,7 @@ func NewPostsRepository(db *sql.DB) PostsRepository {
 
 var _ driven.PostsRepository = (*PostsRepository)(nil)
 
-func (r PostsRepository) CreateEntry(ctx context.Context, post *domain.Post) error {
+func (r PostsRepository) CreateEntry(ctx context.Context, post *domain.Post) (string, error) {
 	query := `
 		INSERT INTO posts (title, user_id, content, updated_at, created_at)
 		VALUES ($1, $2, $3, $4, $5)
@@ -33,10 +33,10 @@ func (r PostsRepository) CreateEntry(ctx context.Context, post *domain.Post) err
 	var id string
 	err := r.db.QueryRowContext(ctx, query, post.Title, post.UserID, post.Content, post.UpdatedAt, post.CreatedAt).Scan(&id)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return id, nil
 }
 
 func (r PostsRepository) GetByID(ctx context.Context, postID string) (*domain.Post, error) {

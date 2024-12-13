@@ -8,6 +8,7 @@ import (
 	postgres_test "github.com/karaMuha/go-social/internal/database/postgres/test_container"
 	"github.com/karaMuha/go-social/internal/mailer"
 	"github.com/karaMuha/go-social/users/application"
+	"github.com/karaMuha/go-social/users/application/commands"
 	"github.com/karaMuha/go-social/users/postgres"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -48,4 +49,36 @@ func (s *ApplicationTestSuite) AfterTest(suiteName, testName string) {
 
 	_, err = s.dbHandler.ExecContext(s.ctx, queryClearFollowersTable)
 	require.NoError(s.T(), err)
+}
+
+func (s *ApplicationTestSuite) TestSignupSuccess() {
+	cmd := commands.SignupUserDto{
+		Email:    "test@test.com",
+		Username: "Testian",
+		Password: "test123",
+	}
+
+	err := s.app.SignupUser(s.ctx, &cmd)
+	require.NoError(s.T(), err)
+
+	user, err := s.app.GetUserByEmail(s.ctx, cmd.Email)
+	require.NoError(s.T(), err)
+	require.NotEmpty(s.T(), user.ID)
+	require.False(s.T(), user.Active)
+}
+
+func (s *ApplicationTestSuite) TestSignupFailToSendMail() {
+	cmd := commands.SignupUserDto{
+		Email:    "error@error.com",
+		Username: "Testian",
+		Password: "test123",
+	}
+
+	err := s.app.SignupUser(s.ctx, &cmd)
+	require.Error(s.T(), err)
+
+	user, err := s.app.GetUserByEmail(s.ctx, cmd.Email)
+	require.Error(s.T(), err)
+	require.Equal(s.T(), "user not found", err.Error())
+	require.Nil(s.T(), user)
 }

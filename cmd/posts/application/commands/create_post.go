@@ -24,16 +24,16 @@ func NewCreatePostCommand(postsRepository driven.PostsRepository) CreatePostComm
 	}
 }
 
-func (c CreatePostCommand) CreatePost(ctx context.Context, cmd *CreatePostDto) error {
+func (c CreatePostCommand) CreatePost(ctx context.Context, cmd *CreatePostDto) (string, error) {
 	post, err := domain.CreatePost(cmd.Title, cmd.UserID, cmd.Content)
 	if err != nil {
-		return fmt.Errorf("error creating post: %v", err)
+		return "", fmt.Errorf("error creating post: %v", err)
 	}
 
-	err = c.postsRepository.CreateEntry(ctx, post)
+	postID, err := c.postsRepository.CreateEntry(ctx, post)
 	if err != nil {
-		return fmt.Errorf("error creating post: %v", err)
+		return "", fmt.Errorf("error creating post: %v", err)
 	}
 
-	return nil
+	return postID, nil
 }
