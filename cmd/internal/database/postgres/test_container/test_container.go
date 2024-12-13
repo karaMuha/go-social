@@ -16,7 +16,7 @@ import (
 func CreatePostgresContainer(ctx context.Context) (*sql.DB, error) {
 	pgContainer, err := postgres.Run(ctx,
 		"postgres:16.3-alpine",
-		postgres.WithInitScripts(filepath.Join("..", "testdata", "test-db.sql")),
+		postgres.WithInitScripts(filepath.Join("..", "..", "..", "dbscripts", "public_schema.sql")),
 		postgres.WithDatabase("social_db"),
 		postgres.WithUsername("admin"),
 		postgres.WithPassword("secret"),
