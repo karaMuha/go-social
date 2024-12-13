@@ -33,7 +33,6 @@ func New(
 	usersRepo driven.IUsersRepsitory,
 	followersRepository driven.IFollowersRepository,
 	mailServer mailer.Mailer,
-	privateKeyPath string,
 ) Application {
 	domain.InitValidator()
 	return Application{
