@@ -53,8 +53,8 @@ func (h FollowersHandlerV1) UnfollowHandler(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (h FollowersHandlerV1) GetFollowersOfUser(w http.ResponseWriter, r *http.Request) {
-	userID := r.PathValue("id")
+func (h FollowersHandlerV1) ListFollowersOfUser(w http.ResponseWriter, r *http.Request) {
+	userID := r.URL.Query().Get("user-id")
 	followerList, err := h.app.GetFollowersOfUser(r.Context(), userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

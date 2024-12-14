@@ -5,13 +5,13 @@ import (
 	"log"
 	"net/http"
 
+	posts "github.com/karaMuha/go-social/contents"
 	authtoken "github.com/karaMuha/go-social/internal/auth_token"
 	"github.com/karaMuha/go-social/internal/config"
 	"github.com/karaMuha/go-social/internal/database/postgres"
 	"github.com/karaMuha/go-social/internal/mailer"
 	"github.com/karaMuha/go-social/internal/middleware"
 	"github.com/karaMuha/go-social/internal/monolith"
-	"github.com/karaMuha/go-social/posts"
 	"github.com/karaMuha/go-social/users"
 
 	_ "github.com/lib/pq"

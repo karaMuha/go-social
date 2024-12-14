@@ -3,7 +3,7 @@ package driven
 import (
 	"context"
 
-	"github.com/karaMuha/go-social/posts/application/domain"
+	"github.com/karaMuha/go-social/contents/application/domain"
 )
 
 type PostsRepository interface {
