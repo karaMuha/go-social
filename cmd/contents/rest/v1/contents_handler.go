@@ -4,23 +4,23 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/karaMuha/go-social/contents/application/commands"
+	ports "github.com/karaMuha/go-social/contents/application/ports/driver"
 	"github.com/karaMuha/go-social/internal/middleware"
-	"github.com/karaMuha/go-social/posts/application/commands"
-	ports "github.com/karaMuha/go-social/posts/application/ports/driver"
 )
 
 type PostsHandlerV1 struct {
 	app ports.IApplication
 }
 
-func NewPostsHandlerV1(app ports.IApplication) PostsHandlerV1 {
+func NewContentsHandlerV1(app ports.IApplication) PostsHandlerV1 {
 	return PostsHandlerV1{
 		app: app,
 	}
 }
 
-func (h PostsHandlerV1) HandleCreatePost(w http.ResponseWriter, r *http.Request) {
-	var cmdParams commands.CreatePostDto
+func (h PostsHandlerV1) HandlePostContent(w http.ResponseWriter, r *http.Request) {
+	var cmdParams commands.PostContentDto
 	err := json.NewDecoder(r.Body).Decode(&cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -29,7 +29,7 @@ func (h PostsHandlerV1) HandleCreatePost(w http.ResponseWriter, r *http.Request)
 
 	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
 
-	_, err = h.app.CreatePost(r.Context(), &cmdParams)
+	_, err = h.app.PostContent(r.Context(), &cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -38,10 +38,10 @@ func (h PostsHandlerV1) HandleCreatePost(w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h PostsHandlerV1) HandleGetPost(w http.ResponseWriter, r *http.Request) {
-	postID := r.PathValue("id")
+func (h PostsHandlerV1) HandleViewContentDetails(w http.ResponseWriter, r *http.Request) {
+	postID := r.URL.Query().Get("post-id")
 
-	post, err := h.app.GetPost(r.Context(), postID)
+	post, err := h.app.GetContentDetails(r.Context(), postID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -58,8 +58,8 @@ func (h PostsHandlerV1) HandleGetPost(w http.ResponseWriter, r *http.Request) {
 	w.Write(responseJson)
 }
 
-func (h PostsHandlerV1) HandleUpdatePost(w http.ResponseWriter, r *http.Request) {
-	var cmdParams commands.UpdatePostDto
+func (h PostsHandlerV1) HandleUpdateContent(w http.ResponseWriter, r *http.Request) {
+	var cmdParams commands.UpdateContentDto
 	err := json.NewDecoder(r.Body).Decode(&cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -69,7 +69,7 @@ func (h PostsHandlerV1) HandleUpdatePost(w http.ResponseWriter, r *http.Request)
 	cmdParams.ID = r.PathValue("id")
 	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
 
-	err = h.app.UpdatePost(r.Context(), &cmdParams)
+	err = h.app.UpdateContent(r.Context(), &cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -78,12 +78,17 @@ func (h PostsHandlerV1) HandleUpdatePost(w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h PostsHandlerV1) HandleDeletePost(w http.ResponseWriter, r *http.Request) {
-	var cmdParams commands.DeletePostDto
-	cmdParams.ID = r.PathValue("id")
+func (h PostsHandlerV1) HandleRemoveContent(w http.ResponseWriter, r *http.Request) {
+	var cmdParams commands.RemoveContentDto
+	err := json.NewDecoder(r.Body).Decode(&cmdParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
 
-	err := h.app.DeletePost(r.Context(), &cmdParams)
+	err = h.app.RemoveContent(r.Context(), &cmdParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/karaMuha/go-social/posts/application/domain"
-	"github.com/karaMuha/go-social/posts/application/ports/driven"
+	"github.com/karaMuha/go-social/contents/application/domain"
+	"github.com/karaMuha/go-social/contents/application/ports/driven"
 )
 
 type PostsRepository struct {

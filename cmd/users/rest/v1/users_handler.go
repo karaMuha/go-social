@@ -7,6 +7,7 @@ import (
 
 	authtoken "github.com/karaMuha/go-social/internal/auth_token"
 	"github.com/karaMuha/go-social/users/application/commands"
+	"github.com/karaMuha/go-social/users/application/domain"
 	ports "github.com/karaMuha/go-social/users/application/ports/driver"
 )
 
@@ -22,7 +23,7 @@ func NewUsersHandlerV1(app ports.IApplication, tokenProvider authtoken.ITokenPro
 	}
 }
 
-func (h UsersHandlerV1) SignupHandler(w http.ResponseWriter, r *http.Request) {
+func (h UsersHandlerV1) HandleSignup(w http.ResponseWriter, r *http.Request) {
 	var cmdParams commands.SignupUserDto
 	err := json.NewDecoder(r.Body).Decode(&cmdParams)
 	if err != nil {
@@ -37,7 +38,7 @@ func (h UsersHandlerV1) SignupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h UsersHandlerV1) ConfirmHandler(w http.ResponseWriter, r *http.Request) {
+func (h UsersHandlerV1) HandleConfirm(w http.ResponseWriter, r *http.Request) {
 	email := r.URL.Query().Get("email")
 	token := r.URL.Query().Get("token")
 	cmdParams := commands.ConfirmUserDto{
@@ -52,9 +53,31 @@ func (h UsersHandlerV1) ConfirmHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h UsersHandlerV1) GetByEmailHandler(w http.ResponseWriter, r *http.Request) {
-	email := r.PathValue("email")
-	user, err := h.app.GetUserByEmail(r.Context(), email)
+func (h UsersHandlerV1) HandleViewUserDetails(w http.ResponseWriter, r *http.Request) {
+	email := r.URL.Query().Get("email")
+	userID := r.URL.Query().Get("user-id")
+
+	if email == "" && userID == "" {
+		http.Error(w, "no query parameter provided", http.StatusBadRequest)
+		return
+	}
+
+	if email != "" && userID != "" {
+		http.Error(w, "too many query parameter provided", http.StatusBadRequest)
+		return
+	}
+
+	var user *domain.Registration
+	var err error
+
+	if email != "" {
+		user, err = h.app.GetUserByEmail(r.Context(), email)
+	}
+
+	if userID != "" {
+		user, err = h.app.GetUserByID(r.Context(), userID)
+	}
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -71,26 +94,7 @@ func (h UsersHandlerV1) GetByEmailHandler(w http.ResponseWriter, r *http.Request
 	w.Write(responseJson)
 }
 
-func (h UsersHandlerV1) GetByIdHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
-	user, err := h.app.GetUserByID(r.Context(), id)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	responseJson, err := json.Marshal(user)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(responseJson)
-}
-
-func (h UsersHandlerV1) LoginHandler(w http.ResponseWriter, r *http.Request) {
+func (h UsersHandlerV1) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	var cmdParams commands.ValidateCredentialsDto
 	err := json.NewDecoder(r.Body).Decode(&cmdParams)
 	if err != nil {
