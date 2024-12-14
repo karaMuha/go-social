@@ -4,27 +4,27 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/karaMuha/go-social/posts/application/ports/driven"
+	"github.com/karaMuha/go-social/contents/application/ports/driven"
 )
 
-type UpdatePostDto struct {
-	ID      string
+type UpdateContentDto struct {
+	ID      string `json:"id"`
 	Title   string `json:"title"`
 	UserID  string
 	Content string `json:"content"`
 }
 
-type UpdatePostCommand struct {
+type UpdateContentCommand struct {
 	postsRepository driven.PostsRepository
 }
 
-func NewUpdatePostCommand(postsRepository driven.PostsRepository) UpdatePostCommand {
-	return UpdatePostCommand{
+func NewUpdateContentCommand(postsRepository driven.PostsRepository) UpdateContentCommand {
+	return UpdateContentCommand{
 		postsRepository: postsRepository,
 	}
 }
 
-func (c UpdatePostCommand) UpdatePost(ctx context.Context, cmd *UpdatePostDto) error {
+func (c UpdateContentCommand) UpdateContent(ctx context.Context, cmd *UpdateContentDto) error {
 	post, err := c.postsRepository.GetByID(ctx, cmd.ID)
 	if err != nil {
 		return fmt.Errorf("error updating post: %v", err)

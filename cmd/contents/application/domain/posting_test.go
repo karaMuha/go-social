@@ -28,7 +28,7 @@ func TestCreatePost(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		_, err := CreatePost(test.title, test.userID, test.content)
+		_, err := PostContent(test.title, test.userID, test.content)
 		if err == nil && test.wantErr {
 			t.Errorf("Create post test error: want error but got none for test case: %s", test.testName)
 		}
@@ -42,7 +42,7 @@ func TestUpdatePost(t *testing.T) {
 	InitValidator()
 	userID := uuid.New()
 	wrongUserID := uuid.New()
-	post, err := CreatePost("This is a Title", userID.String(), "This is the content")
+	post, err := PostContent("This is a Title", userID.String(), "This is the content")
 	if err != nil {
 		t.Errorf("Cannot prepare post for test: %v", err)
 	}
@@ -76,7 +76,7 @@ func TestDeletePost(t *testing.T) {
 	InitValidator()
 	userID := uuid.New()
 	wrongUserID := uuid.New()
-	post, err := CreatePost("This is a Title", userID.String(), "This is the content")
+	post, err := PostContent("This is a Title", userID.String(), "This is the content")
 	if err != nil {
 		t.Errorf("Cannot prepare post for test: %v", err)
 	}

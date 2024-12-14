@@ -14,7 +14,7 @@ type Post struct {
 	CreatedAt time.Time
 }
 
-func CreatePost(title string, userID string, content string) (*Post, error) {
+func PostContent(title string, userID string, content string) (*Post, error) {
 	post := Post{
 		Title:     title,
 		UserID:    userID,

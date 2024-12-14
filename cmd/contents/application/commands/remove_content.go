@@ -4,25 +4,25 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/karaMuha/go-social/posts/application/ports/driven"
+	"github.com/karaMuha/go-social/contents/application/ports/driven"
 )
 
-type DeletePostDto struct {
-	ID     string
+type RemoveContentDto struct {
+	ID     string `json:"id"`
 	UserID string
 }
 
-type DeletePostCommand struct {
+type RemoveContentCommand struct {
 	postsRepository driven.PostsRepository
 }
 
-func NewDeletePostCommand(postsRepository driven.PostsRepository) DeletePostCommand {
-	return DeletePostCommand{
+func NewRemoveContentCommand(postsRepository driven.PostsRepository) RemoveContentCommand {
+	return RemoveContentCommand{
 		postsRepository: postsRepository,
 	}
 }
 
-func (c DeletePostCommand) DeletePost(ctx context.Context, cmd *DeletePostDto) error {
+func (c RemoveContentCommand) RemoveContent(ctx context.Context, cmd *RemoveContentDto) error {
 	post, err := c.postsRepository.GetByID(ctx, cmd.ID)
 	if err != nil {
 		return fmt.Errorf("error deleting post: %v", err)

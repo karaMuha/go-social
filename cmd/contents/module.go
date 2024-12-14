@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/karaMuha/go-social/contents/application"
+	"github.com/karaMuha/go-social/contents/postgres"
+	"github.com/karaMuha/go-social/contents/rest/v1"
 	"github.com/karaMuha/go-social/internal/monolith"
-	"github.com/karaMuha/go-social/posts/application"
-	"github.com/karaMuha/go-social/posts/postgres"
-	"github.com/karaMuha/go-social/posts/rest/v1"
 )
 
 type Module struct{}
@@ -20,7 +20,7 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 	app := application.New(postsRepository)
 
 	// setup driver adapters
-	postsHandlerV1 := rest.NewPostsHandlerV1(app)
+	postsHandlerV1 := rest.NewContentsHandlerV1(app)
 	setupEndpoints(mono.Mux(), postsHandlerV1)
 
 	return nil
@@ -28,10 +28,10 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 
 func setupEndpoints(mux *http.ServeMux, postsHandlerV1 rest.PostsHandlerV1) {
 	postsV1 := http.NewServeMux()
-	postsV1.HandleFunc("POST /", postsHandlerV1.HandleCreatePost)
-	postsV1.HandleFunc("GET /{id}", postsHandlerV1.HandleGetPost)
-	postsV1.HandleFunc("PUT /{id}", postsHandlerV1.HandleUpdatePost)
-	postsV1.HandleFunc("DELETE /{id}", postsHandlerV1.HandleDeletePost)
+	postsV1.HandleFunc("POST /post-content", postsHandlerV1.HandlePostContent)
+	postsV1.HandleFunc("GET /view-content-details", postsHandlerV1.HandleViewContentDetails)
+	postsV1.HandleFunc("POST /update-content", postsHandlerV1.HandleUpdateContent)
+	postsV1.HandleFunc("POST /remove-content", postsHandlerV1.HandleRemoveContent)
 
 	mux.Handle("/v1/posts/", http.StripPrefix("/v1/posts", postsV1))
 }

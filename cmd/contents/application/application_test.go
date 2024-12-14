@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/karaMuha/go-social/contents/application"
+	"github.com/karaMuha/go-social/contents/application/commands"
+	"github.com/karaMuha/go-social/contents/postgres"
 	postgres_test "github.com/karaMuha/go-social/internal/database/postgres/test_container"
-	"github.com/karaMuha/go-social/posts/application"
-	"github.com/karaMuha/go-social/posts/application/commands"
-	"github.com/karaMuha/go-social/posts/postgres"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"github.com/thanhpk/randstr"
@@ -74,17 +74,17 @@ func (s *ApplicationTestSuite) AfterTest() {
 }
 
 func (s *ApplicationTestSuite) TestCreatePost() {
-	cmd := commands.CreatePostDto{
+	cmd := commands.PostContentDto{
 		Title:   "This is a title",
 		UserID:  userIDs[0],
 		Content: "This is the content",
 	}
 
-	postID, err := s.app.CreatePost(s.ctx, &cmd)
+	postID, err := s.app.PostContent(s.ctx, &cmd)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), postID)
 
-	post, err := s.app.GetPost(s.ctx, postID)
+	post, err := s.app.GetContentDetails(s.ctx, postID)
 	require.NoError(s.T(), err)
 	require.NotNil(s.T(), post)
 	require.Equal(s.T(), cmd.UserID, post.UserID)

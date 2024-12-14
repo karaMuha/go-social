@@ -38,18 +38,17 @@ func setupEndpoints(
 	followersHandlerV1 rest.FollowersHandlerV1,
 ) {
 	usersV1 := http.NewServeMux()
-	usersV1.HandleFunc("POST /", usersHandlerV1.SignupHandler)
-	usersV1.HandleFunc("PUT /confirm", usersHandlerV1.ConfirmHandler)
-	usersV1.HandleFunc("GET /email/{email}", usersHandlerV1.GetByEmailHandler)
-	usersV1.HandleFunc("GET /{id}", usersHandlerV1.GetByIdHandler)
-	usersV1.HandleFunc("POST /login", usersHandlerV1.LoginHandler)
+	usersV1.HandleFunc("POST /signup-for-registration", usersHandlerV1.HandleSignup)
+	usersV1.HandleFunc("POST /confirm-registration", usersHandlerV1.HandleConfirm)
+	usersV1.HandleFunc("GET /view-user-details", usersHandlerV1.HandleViewUserDetails)
+	usersV1.HandleFunc("POST /login", usersHandlerV1.HandleLogin)
 
 	mux.Handle("/v1/users/", http.StripPrefix("/v1/users", usersV1))
 
 	followersV1 := http.NewServeMux()
-	followersV1.HandleFunc("POST /", followersHandlerV1.FollowHandler)
-	followersV1.HandleFunc("DELETE /", followersHandlerV1.UnfollowHandler)
-	followersV1.HandleFunc("GET /{id}", followersHandlerV1.GetFollowersOfUser)
+	followersV1.HandleFunc("POST /follow-user", followersHandlerV1.FollowHandler)
+	followersV1.HandleFunc("POST /unfollow-user", followersHandlerV1.UnfollowHandler)
+	followersV1.HandleFunc("GET /list-followers-of-user", followersHandlerV1.ListFollowersOfUser)
 
 	mux.Handle("/v1/followers/", http.StripPrefix("/v1/followers", followersV1))
 }
