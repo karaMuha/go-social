@@ -21,20 +21,22 @@ type appCommands struct {
 
 type appQueries struct {
 	queries.GetContentDetailsQuery
+	queries.GetContentOfUserQuery
 }
 
 var _ driver.IApplication = (*Application)(nil)
 
-func New(postsRepository driven.PostsRepository) Application {
+func New(contentsRepository driven.ContentsRepository) Application {
 	domain.InitValidator()
 	return Application{
 		appCommands: appCommands{
-			PostContentCommand:   commands.NewPostContentCommand(postsRepository),
-			UpdateContentCommand: commands.NewUpdateContentCommand(postsRepository),
-			RemoveContentCommand: commands.NewRemoveContentCommand(postsRepository),
+			PostContentCommand:   commands.NewPostContentCommand(contentsRepository),
+			UpdateContentCommand: commands.NewUpdateContentCommand(contentsRepository),
+			RemoveContentCommand: commands.NewRemoveContentCommand(contentsRepository),
 		},
 		appQueries: appQueries{
-			GetContentDetailsQuery: queries.NewGetContentDetailsQuery(postsRepository),
+			GetContentDetailsQuery: queries.NewGetContentDetailsQuery(contentsRepository),
+			GetContentOfUserQuery:  queries.NewGetContentOfUserQuery(contentsRepository),
 		},
 	}
 }
