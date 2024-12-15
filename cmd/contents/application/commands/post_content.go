@@ -15,12 +15,12 @@ type PostContentDto struct {
 }
 
 type PostContentCommand struct {
-	postsRepository driven.PostsRepository
+	contentsRepository driven.ContentsRepository
 }
 
-func NewPostContentCommand(postsRepository driven.PostsRepository) PostContentCommand {
+func NewPostContentCommand(contentsRepository driven.ContentsRepository) PostContentCommand {
 	return PostContentCommand{
-		postsRepository: postsRepository,
+		contentsRepository: contentsRepository,
 	}
 }
 
@@ -30,7 +30,7 @@ func (c PostContentCommand) PostContent(ctx context.Context, cmd *PostContentDto
 		return "", fmt.Errorf("error creating post: %v", err)
 	}
 
-	postID, err := c.postsRepository.CreateEntry(ctx, post)
+	postID, err := c.contentsRepository.CreateEntry(ctx, post)
 	if err != nil {
 		return "", fmt.Errorf("error creating post: %v", err)
 	}

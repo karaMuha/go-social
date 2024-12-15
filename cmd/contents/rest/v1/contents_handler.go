@@ -39,15 +39,15 @@ func (h ContentsHandlerV1) HandlePostContent(w http.ResponseWriter, r *http.Requ
 }
 
 func (h ContentsHandlerV1) HandleViewContentDetails(w http.ResponseWriter, r *http.Request) {
-	postID := r.URL.Query().Get("post-id")
+	contentID := r.URL.Query().Get("content-id")
 
-	post, err := h.app.GetContentDetails(r.Context(), postID)
+	content, err := h.app.GetContentDetails(r.Context(), contentID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	responseJson, err := json.Marshal(post)
+	responseJson, err := json.Marshal(content)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -66,7 +66,6 @@ func (h ContentsHandlerV1) HandleUpdateContent(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	cmdParams.ID = r.PathValue("id")
 	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
 
 	err = h.app.UpdateContent(r.Context(), &cmdParams)
@@ -105,5 +104,19 @@ func (h ContentsHandlerV1) HandleViewUsersContent(w http.ResponseWriter, r *http
 		return
 	}
 
-	http.Error(w, "not implemented yet", http.StatusNotImplemented)
+	contentList, err := h.app.GetContentOfUser(r.Context(), requestedProfile)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	responseJson, err := json.Marshal(contentList)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
 }

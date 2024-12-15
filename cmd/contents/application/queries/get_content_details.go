@@ -8,15 +8,15 @@ import (
 )
 
 type GetContentDetailsQuery struct {
-	postsRepository driven.PostsRepository
+	contentsRepository driven.ContentsRepository
 }
 
-func NewGetContentDetailsQuery(postsRepository driven.PostsRepository) GetContentDetailsQuery {
+func NewGetContentDetailsQuery(postsRepository driven.ContentsRepository) GetContentDetailsQuery {
 	return GetContentDetailsQuery{
-		postsRepository: postsRepository,
+		contentsRepository: postsRepository,
 	}
 }
 
 func (q GetContentDetailsQuery) GetContentDetails(ctx context.Context, postID string) (*domain.Content, error) {
-	return q.postsRepository.GetByID(ctx, postID)
+	return q.contentsRepository.GetByID(ctx, postID)
 }

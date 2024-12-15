@@ -19,7 +19,7 @@ func NewContentsRepository(db *sql.DB) ContentsRepository {
 	}
 }
 
-var _ driven.PostsRepository = (*ContentsRepository)(nil)
+var _ driven.ContentsRepository = (*ContentsRepository)(nil)
 
 func (r ContentsRepository) CreateEntry(ctx context.Context, content *domain.Content) (string, error) {
 	query := `
@@ -96,4 +96,39 @@ func (r ContentsRepository) DeleteEntry(ctx context.Context, contentID string) e
 	}
 
 	return nil
+}
+
+func (r ContentsRepository) GetAllOfUser(ctx context.Context, userID string) ([]*domain.Content, error) {
+	query := `
+		SELECT *
+		FROM posts
+		WHERE user_id = $1
+		ORDER BY created_at DESC
+	`
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	rows, err := r.db.QueryContext(ctx, query, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	var contentList []*domain.Content
+	for rows.Next() {
+		var content domain.Content
+		err := rows.Scan(
+			&content.ID,
+			&content.Title,
+			&content.UserID,
+			&content.Infill,
+			&content.UpdatedAt,
+			&content.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		contentList = append(contentList, &content)
+	}
+	return contentList, nil
 }

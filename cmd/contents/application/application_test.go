@@ -38,9 +38,9 @@ func (s *ApplicationTestSuite) SetupSuite() {
 
 	// userIDs are needed to perform actions on posts due to foreign key policy in database
 	setupUsers(s.T(), dbHandler)
-	postsRepository := postgres.NewContentsRepository(dbHandler)
+	contentsRepository := postgres.NewContentsRepository(dbHandler)
 
-	s.app = application.New(postsRepository)
+	s.app = application.New(contentsRepository)
 }
 
 // creates a few users and saves the IDs for further usage
@@ -66,14 +66,14 @@ func setupUsers(t *testing.T, dbHandler *sql.DB) {
 	}
 }
 
-// clear tables after each test to avoid conflicts and side effects
+// clear table after each test to avoid conflicts and side effects
 func (s *ApplicationTestSuite) AfterTest() {
 	queryClearPostsTable := `DELETE FROM posts`
 	_, err := s.dbHandler.ExecContext(s.ctx, queryClearPostsTable)
 	require.NoError(s.T(), err)
 }
 
-func (s *ApplicationTestSuite) TestCreatePost() {
+func (s *ApplicationTestSuite) TestCreateContent() {
 	cmd := commands.PostContentDto{
 		Title:   "This is a title",
 		UserID:  userIDs[0],

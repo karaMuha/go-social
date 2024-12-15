@@ -20,8 +20,8 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 	app := application.New(contentsRepository)
 
 	// setup driver adapters
-	postsHandlerV1 := rest.NewContentsHandlerV1(app)
-	setupEndpoints(mono.Mux(), postsHandlerV1)
+	contentsHandlerV1 := rest.NewContentsHandlerV1(app)
+	setupEndpoints(mono.Mux(), contentsHandlerV1)
 
 	return nil
 }
@@ -34,5 +34,5 @@ func setupEndpoints(mux *http.ServeMux, postsHandlerV1 rest.ContentsHandlerV1) {
 	contentsV1.HandleFunc("POST /remove-content", postsHandlerV1.HandleRemoveContent)
 	contentsV1.HandleFunc("GET /view-users-content", postsHandlerV1.HandleViewUsersContent)
 
-	mux.Handle("/v1/posts/", http.StripPrefix("/v1/posts", contentsV1))
+	mux.Handle("/v1/contents/", http.StripPrefix("/v1/contents", contentsV1))
 }
