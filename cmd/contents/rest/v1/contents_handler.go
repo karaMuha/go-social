@@ -9,17 +9,17 @@ import (
 	"github.com/karaMuha/go-social/internal/middleware"
 )
 
-type PostsHandlerV1 struct {
+type ContentsHandlerV1 struct {
 	app ports.IApplication
 }
 
-func NewContentsHandlerV1(app ports.IApplication) PostsHandlerV1 {
-	return PostsHandlerV1{
+func NewContentsHandlerV1(app ports.IApplication) ContentsHandlerV1 {
+	return ContentsHandlerV1{
 		app: app,
 	}
 }
 
-func (h PostsHandlerV1) HandlePostContent(w http.ResponseWriter, r *http.Request) {
+func (h ContentsHandlerV1) HandlePostContent(w http.ResponseWriter, r *http.Request) {
 	var cmdParams commands.PostContentDto
 	err := json.NewDecoder(r.Body).Decode(&cmdParams)
 	if err != nil {
@@ -38,16 +38,16 @@ func (h PostsHandlerV1) HandlePostContent(w http.ResponseWriter, r *http.Request
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h PostsHandlerV1) HandleViewContentDetails(w http.ResponseWriter, r *http.Request) {
-	postID := r.URL.Query().Get("post-id")
+func (h ContentsHandlerV1) HandleViewContentDetails(w http.ResponseWriter, r *http.Request) {
+	contentID := r.URL.Query().Get("content-id")
 
-	post, err := h.app.GetContentDetails(r.Context(), postID)
+	content, err := h.app.GetContentDetails(r.Context(), contentID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	responseJson, err := json.Marshal(post)
+	responseJson, err := json.Marshal(content)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -58,7 +58,7 @@ func (h PostsHandlerV1) HandleViewContentDetails(w http.ResponseWriter, r *http.
 	w.Write(responseJson)
 }
 
-func (h PostsHandlerV1) HandleUpdateContent(w http.ResponseWriter, r *http.Request) {
+func (h ContentsHandlerV1) HandleUpdateContent(w http.ResponseWriter, r *http.Request) {
 	var cmdParams commands.UpdateContentDto
 	err := json.NewDecoder(r.Body).Decode(&cmdParams)
 	if err != nil {
@@ -66,7 +66,6 @@ func (h PostsHandlerV1) HandleUpdateContent(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	cmdParams.ID = r.PathValue("id")
 	cmdParams.UserID = r.Context().Value(middleware.ContextUserIDKey).(string)
 
 	err = h.app.UpdateContent(r.Context(), &cmdParams)
@@ -78,7 +77,7 @@ func (h PostsHandlerV1) HandleUpdateContent(w http.ResponseWriter, r *http.Reque
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h PostsHandlerV1) HandleRemoveContent(w http.ResponseWriter, r *http.Request) {
+func (h ContentsHandlerV1) HandleRemoveContent(w http.ResponseWriter, r *http.Request) {
 	var cmdParams commands.RemoveContentDto
 	err := json.NewDecoder(r.Body).Decode(&cmdParams)
 	if err != nil {
@@ -95,4 +94,29 @@ func (h PostsHandlerV1) HandleRemoveContent(w http.ResponseWriter, r *http.Reque
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func (h ContentsHandlerV1) HandleViewUsersContent(w http.ResponseWriter, r *http.Request) {
+	requestedProfile := r.URL.Query().Get("user-id")
+
+	if requestedProfile == "" {
+		http.Error(w, "no profile specified", http.StatusBadRequest)
+		return
+	}
+
+	contentList, err := h.app.GetContentOfUser(r.Context(), requestedProfile)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	responseJson, err := json.Marshal(contentList)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(responseJson)
 }

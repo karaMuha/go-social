@@ -13,17 +13,17 @@ type RemoveContentDto struct {
 }
 
 type RemoveContentCommand struct {
-	postsRepository driven.PostsRepository
+	contentsRepository driven.ContentsRepository
 }
 
-func NewRemoveContentCommand(postsRepository driven.PostsRepository) RemoveContentCommand {
+func NewRemoveContentCommand(contentsRepository driven.ContentsRepository) RemoveContentCommand {
 	return RemoveContentCommand{
-		postsRepository: postsRepository,
+		contentsRepository: contentsRepository,
 	}
 }
 
 func (c RemoveContentCommand) RemoveContent(ctx context.Context, cmd *RemoveContentDto) error {
-	post, err := c.postsRepository.GetByID(ctx, cmd.ID)
+	post, err := c.contentsRepository.GetByID(ctx, cmd.ID)
 	if err != nil {
 		return fmt.Errorf("error deleting post: %v", err)
 	}
@@ -33,7 +33,7 @@ func (c RemoveContentCommand) RemoveContent(ctx context.Context, cmd *RemoveCont
 		return fmt.Errorf("error updating post: %v", err)
 	}
 
-	err = c.postsRepository.DeleteEntry(ctx, cmd.ID)
+	err = c.contentsRepository.DeleteEntry(ctx, cmd.ID)
 	if err != nil {
 		return fmt.Errorf("error updating post: %v", err)
 	}

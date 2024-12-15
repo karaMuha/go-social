@@ -19,5 +19,6 @@ type ICommands interface {
 }
 
 type IQueries interface {
-	GetContentDetails(ctx context.Context, postID string) (*domain.Post, error)
+	GetContentDetails(ctx context.Context, postID string) (*domain.Content, error)
+	GetContentOfUser(ctx context.Context, userID string) ([]*domain.Content, error)
 }

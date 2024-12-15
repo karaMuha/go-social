@@ -5,53 +5,53 @@ import (
 	"time"
 )
 
-type Post struct {
+type Content struct {
 	ID        string
 	Title     string `validate:"required"`
 	UserID    string `validate:"required,uuid"`
-	Content   string `validate:"required"`
+	Infill    string `validate:"required"`
 	UpdatedAt time.Time
 	CreatedAt time.Time
 }
 
-func PostContent(title string, userID string, content string) (*Post, error) {
-	post := Post{
+func PostContent(title string, userID string, infill string) (*Content, error) {
+	content := Content{
 		Title:     title,
 		UserID:    userID,
-		Content:   content,
+		Infill:    infill,
 		UpdatedAt: time.Now(),
 		CreatedAt: time.Now(),
 	}
 
-	err := validate.Struct(&post)
+	err := validate.Struct(&content)
 	if err != nil {
 		return nil, err
 	}
 
-	return &post, nil
+	return &content, nil
 }
 
-func (p *Post) Update(title string, content string, userID string) error {
-	if p.UserID != userID {
+func (c *Content) Update(title string, infill string, userID string) error {
+	if c.UserID != userID {
 		return errors.New("access denied")
 	}
 
 	if title == "" {
 		return errors.New("title cannot be empty")
 	}
-	if content == "" {
+	if infill == "" {
 		return errors.New("content cannot be empty")
 	}
 
-	p.Title = title
-	p.Content = content
-	p.UpdatedAt = time.Now()
+	c.Title = title
+	c.Infill = infill
+	c.UpdatedAt = time.Now()
 
 	return nil
 }
 
-func (p *Post) Delete(userID string) error {
-	if p.UserID != userID {
+func (c *Content) Delete(userID string) error {
+	if c.UserID != userID {
 		return errors.New("access denied")
 	}
 

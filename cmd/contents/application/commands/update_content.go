@@ -15,17 +15,17 @@ type UpdateContentDto struct {
 }
 
 type UpdateContentCommand struct {
-	postsRepository driven.PostsRepository
+	contentsRepository driven.ContentsRepository
 }
 
-func NewUpdateContentCommand(postsRepository driven.PostsRepository) UpdateContentCommand {
+func NewUpdateContentCommand(contentsRepository driven.ContentsRepository) UpdateContentCommand {
 	return UpdateContentCommand{
-		postsRepository: postsRepository,
+		contentsRepository: contentsRepository,
 	}
 }
 
 func (c UpdateContentCommand) UpdateContent(ctx context.Context, cmd *UpdateContentDto) error {
-	post, err := c.postsRepository.GetByID(ctx, cmd.ID)
+	post, err := c.contentsRepository.GetByID(ctx, cmd.ID)
 	if err != nil {
 		return fmt.Errorf("error updating post: %v", err)
 	}
@@ -35,7 +35,7 @@ func (c UpdateContentCommand) UpdateContent(ctx context.Context, cmd *UpdateCont
 		return fmt.Errorf("error updating post: %v", err)
 	}
 
-	err = c.postsRepository.UpdateEntry(ctx, post)
+	err = c.contentsRepository.UpdateEntry(ctx, post)
 	if err != nil {
 		return fmt.Errorf("error updating post: %v", err)
 	}
