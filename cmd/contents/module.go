@@ -14,10 +14,10 @@ type Module struct{}
 
 func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 	// setup driven adapters
-	postsRepository := postgres.NewPostsRepository(mono.DB())
+	contentsRepository := postgres.NewContentsRepository(mono.DB())
 
 	// setup application
-	app := application.New(postsRepository)
+	app := application.New(contentsRepository)
 
 	// setup driver adapters
 	postsHandlerV1 := rest.NewContentsHandlerV1(app)
@@ -26,12 +26,13 @@ func (m *Module) Startup(ctx context.Context, mono monolith.IMonolith) error {
 	return nil
 }
 
-func setupEndpoints(mux *http.ServeMux, postsHandlerV1 rest.PostsHandlerV1) {
-	postsV1 := http.NewServeMux()
-	postsV1.HandleFunc("POST /post-content", postsHandlerV1.HandlePostContent)
-	postsV1.HandleFunc("GET /view-content-details", postsHandlerV1.HandleViewContentDetails)
-	postsV1.HandleFunc("POST /update-content", postsHandlerV1.HandleUpdateContent)
-	postsV1.HandleFunc("POST /remove-content", postsHandlerV1.HandleRemoveContent)
+func setupEndpoints(mux *http.ServeMux, postsHandlerV1 rest.ContentsHandlerV1) {
+	contentsV1 := http.NewServeMux()
+	contentsV1.HandleFunc("POST /post-content", postsHandlerV1.HandlePostContent)
+	contentsV1.HandleFunc("GET /view-content-details", postsHandlerV1.HandleViewContentDetails)
+	contentsV1.HandleFunc("POST /update-content", postsHandlerV1.HandleUpdateContent)
+	contentsV1.HandleFunc("POST /remove-content", postsHandlerV1.HandleRemoveContent)
+	contentsV1.HandleFunc("GET /view-users-content", postsHandlerV1.HandleViewUsersContent)
 
-	mux.Handle("/v1/posts/", http.StripPrefix("/v1/posts", postsV1))
+	mux.Handle("/v1/posts/", http.StripPrefix("/v1/posts", contentsV1))
 }

@@ -17,6 +17,6 @@ func NewGetContentDetailsQuery(postsRepository driven.PostsRepository) GetConten
 	}
 }
 
-func (q GetContentDetailsQuery) GetContentDetails(ctx context.Context, postID string) (*domain.Post, error) {
+func (q GetContentDetailsQuery) GetContentDetails(ctx context.Context, postID string) (*domain.Content, error) {
 	return q.postsRepository.GetByID(ctx, postID)
 }

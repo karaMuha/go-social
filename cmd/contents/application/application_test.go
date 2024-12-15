@@ -38,7 +38,7 @@ func (s *ApplicationTestSuite) SetupSuite() {
 
 	// userIDs are needed to perform actions on posts due to foreign key policy in database
 	setupUsers(s.T(), dbHandler)
-	postsRepository := postgres.NewPostsRepository(dbHandler)
+	postsRepository := postgres.NewContentsRepository(dbHandler)
 
 	s.app = application.New(postsRepository)
 }

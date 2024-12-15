@@ -9,19 +9,19 @@ import (
 	"github.com/karaMuha/go-social/contents/application/ports/driven"
 )
 
-type PostsRepository struct {
+type ContentsRepository struct {
 	db *sql.DB
 }
 
-func NewPostsRepository(db *sql.DB) PostsRepository {
-	return PostsRepository{
+func NewContentsRepository(db *sql.DB) ContentsRepository {
+	return ContentsRepository{
 		db: db,
 	}
 }
 
-var _ driven.PostsRepository = (*PostsRepository)(nil)
+var _ driven.PostsRepository = (*ContentsRepository)(nil)
 
-func (r PostsRepository) CreateEntry(ctx context.Context, post *domain.Post) (string, error) {
+func (r ContentsRepository) CreateEntry(ctx context.Context, content *domain.Content) (string, error) {
 	query := `
 		INSERT INTO posts (title, user_id, content, updated_at, created_at)
 		VALUES ($1, $2, $3, $4, $5)
@@ -31,7 +31,7 @@ func (r PostsRepository) CreateEntry(ctx context.Context, post *domain.Post) (st
 	defer cancel()
 
 	var id string
-	err := r.db.QueryRowContext(ctx, query, post.Title, post.UserID, post.Content, post.UpdatedAt, post.CreatedAt).Scan(&id)
+	err := r.db.QueryRowContext(ctx, query, content.Title, content.UserID, content.Infill, content.UpdatedAt, content.CreatedAt).Scan(&id)
 	if err != nil {
 		return "", err
 	}
@@ -39,7 +39,7 @@ func (r PostsRepository) CreateEntry(ctx context.Context, post *domain.Post) (st
 	return id, nil
 }
 
-func (r PostsRepository) GetByID(ctx context.Context, postID string) (*domain.Post, error) {
+func (r ContentsRepository) GetByID(ctx context.Context, contentID string) (*domain.Content, error) {
 	query := `
 		SELECT *
 		FROM posts
@@ -48,24 +48,24 @@ func (r PostsRepository) GetByID(ctx context.Context, postID string) (*domain.Po
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	var post domain.Post
-	err := r.db.QueryRowContext(ctx, query, postID).Scan(
-		&post.ID,
-		&post.Title,
-		&post.UserID,
-		&post.Content,
-		&post.UpdatedAt,
-		&post.CreatedAt,
+	var content domain.Content
+	err := r.db.QueryRowContext(ctx, query, contentID).Scan(
+		&content.ID,
+		&content.Title,
+		&content.UserID,
+		&content.Infill,
+		&content.UpdatedAt,
+		&content.CreatedAt,
 	)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &post, nil
+	return &content, nil
 }
 
-func (r PostsRepository) UpdateEntry(ctx context.Context, post *domain.Post) error {
+func (r ContentsRepository) UpdateEntry(ctx context.Context, content *domain.Content) error {
 	query := `
 		UPDATE posts
 		SET title = $1, content = $2, updated_at = $3
@@ -74,7 +74,7 @@ func (r PostsRepository) UpdateEntry(ctx context.Context, post *domain.Post) err
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	_, err := r.db.ExecContext(ctx, query, post.Title, post.Content, post.UpdatedAt, post.ID)
+	_, err := r.db.ExecContext(ctx, query, content.Title, content.Infill, content.UpdatedAt, content.ID)
 	if err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func (r PostsRepository) UpdateEntry(ctx context.Context, post *domain.Post) err
 	return nil
 }
 
-func (r PostsRepository) DeleteEntry(ctx context.Context, postID string) error {
+func (r ContentsRepository) DeleteEntry(ctx context.Context, contentID string) error {
 	query := `
 		DELETE FROM posts
 		WHERE id = $1
@@ -90,7 +90,7 @@ func (r PostsRepository) DeleteEntry(ctx context.Context, postID string) error {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	_, err := r.db.ExecContext(ctx, query, postID)
+	_, err := r.db.ExecContext(ctx, query, contentID)
 	if err != nil {
 		return err
 	}
