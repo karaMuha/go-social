@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	authtoken "github.com/karaMuha/go-social/internal/auth_token"
@@ -14,9 +15,10 @@ const ContextUserIDKey contextUserID = "userID"
 
 func Authorizer(next http.Handler, tokenProvider authtoken.ITokenProvider) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		requestTarget := r.Method + " " + r.URL.Path
+		targetEndpoint := r.Method + " " + r.URL.Path
+		fmt.Println(targetEndpoint)
 
-		if !monolith.IsProtectedRoute(requestTarget) {
+		if !monolith.IsProtectedEndpoint(targetEndpoint) {
 			next.ServeHTTP(w, r)
 			return
 		}

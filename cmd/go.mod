@@ -2,7 +2,10 @@ module github.com/karaMuha/go-social
 
 go 1.23.3
 
-require github.com/xhit/go-simple-mail/v2 v2.16.0
+require (
+	github.com/stretchr/testify v1.9.0
+	github.com/xhit/go-simple-mail/v2 v2.16.0
+)
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
@@ -44,7 +47,6 @@ require (
 	github.com/shirou/gopsutil/v3 v3.23.12 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/vanng822/css v1.0.1 // indirect
@@ -70,7 +72,6 @@ require (
 	github.com/thanhpk/randstr v1.0.6
 	github.com/toorop/go-dkim v0.0.0-20201103131630-e1cd1a0a5208 // indirect
 	github.com/vanng822/go-premailer v1.22.0
-	github.com/vodkaslime/wildcard v0.0.0-20220926070406-71dac9214330
 	golang.org/x/crypto v0.29.0
 	golang.org/x/net v0.31.0 // indirect
 	golang.org/x/sys v0.27.0 // indirect

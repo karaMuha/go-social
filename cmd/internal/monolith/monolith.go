@@ -41,7 +41,7 @@ func NewMonolith(cfg *config.Config,
 	modules []IModule,
 	tokenGenerator authtoken.ITokenProvider,
 ) monolith {
-	setProtectedRoutes()
+	setProtectedEndpoints()
 	return monolith{
 		cfg:           cfg,
 		db:            db,
