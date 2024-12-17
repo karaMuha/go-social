@@ -18,10 +18,10 @@ migrate_down1:
 
 unit_tests:
 	cd cmd; \
-	go test -v ./posts/application/domain; \
+	go test -v ./contents/application/domain; \
 	go test -v ./users/application/domain
 
 integration_tests:
 	cd cmd; \
 	go test -v ./users/application; \
-	go test -v ./posts/application
+	go test -v ./contents/application
