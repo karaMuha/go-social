@@ -44,10 +44,10 @@ func (s *ApplicationTestSuite) AfterTest(suiteName, testName string) {
 	queryClearUsersTable := `DELETE FROM users`
 	queryClearFollowersTable := `DELETE FROM followers`
 
-	_, err := s.dbHandler.ExecContext(s.ctx, queryClearUsersTable)
+	_, err := s.dbHandler.ExecContext(s.ctx, queryClearFollowersTable)
 	require.NoError(s.T(), err)
 
-	_, err = s.dbHandler.ExecContext(s.ctx, queryClearFollowersTable)
+	_, err = s.dbHandler.ExecContext(s.ctx, queryClearUsersTable)
 	require.NoError(s.T(), err)
 }
 
