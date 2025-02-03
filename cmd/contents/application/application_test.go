@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -32,7 +33,8 @@ func TestApplicationSuite(t *testing.T) {
 func (s *ApplicationTestSuite) SetupSuite() {
 	s.ctx = context.Background()
 
-	dbHandler, err := postgres_test.CreatePostgresContainer(s.ctx)
+	initScriptPath := filepath.Join("..", "..", "..", "dbscripts", "public_schema.sql")
+	dbHandler, err := postgres_test.CreatePostgresContainer(s.ctx, initScriptPath)
 	require.NoError(s.T(), err)
 	s.dbHandler = dbHandler
 
