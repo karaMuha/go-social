@@ -3,7 +3,6 @@ package postgres_test
 import (
 	"context"
 	"database/sql"
-	"path/filepath"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -13,10 +12,10 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-func CreatePostgresContainer(ctx context.Context) (*sql.DB, error) {
+func CreatePostgresContainer(ctx context.Context, initScriptPath string) (*sql.DB, error) {
 	pgContainer, err := postgres.Run(ctx,
 		"postgres:16.3-alpine",
-		postgres.WithInitScripts(filepath.Join("..", "..", "..", "dbscripts", "public_schema.sql")),
+		postgres.WithInitScripts(initScriptPath),
 		postgres.WithDatabase("social_db"),
 		postgres.WithUsername("admin"),
 		postgres.WithPassword("secret"),
