@@ -1,4 +1,4 @@
-package application_test
+package commands
 
 import (
 	"context"
@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/karaMuha/go-social/contents/application"
-	"github.com/karaMuha/go-social/contents/application/commands"
+	"github.com/karaMuha/go-social/contents/application/domain"
+	"github.com/karaMuha/go-social/contents/application/ports/driven"
 	"github.com/karaMuha/go-social/contents/postgres"
 	postgres_test "github.com/karaMuha/go-social/internal/database/postgres/test_container"
 	"github.com/stretchr/testify/require"
@@ -17,32 +17,33 @@ import (
 	"github.com/thanhpk/randstr"
 )
 
+// userIDs are needed to perform actions on posts due to foreign key policy in database
 var userIDs []string
 
-type ApplicationTestSuite struct {
+type PostContentTestSuite struct {
 	suite.Suite
-	ctx       context.Context
-	app       application.Application
-	dbHandler *sql.DB
+	ctx         context.Context
+	dbHandler   *sql.DB
+	cmd         PostContentCommand
+	contentRepo driven.ContentsRepository
 }
 
-func TestApplicationSuite(t *testing.T) {
-	suite.Run(t, &ApplicationTestSuite{})
+func TestPostContentSuite(t *testing.T) {
+	suite.Run(t, &PostContentTestSuite{})
 }
 
-func (s *ApplicationTestSuite) SetupSuite() {
+func (s *PostContentTestSuite) SetupSuite() {
 	s.ctx = context.Background()
-
-	initScriptPath := filepath.Join("..", "..", "..", "dbscripts", "public_schema.sql")
+	initScriptPath := filepath.Join("..", "..", "..", "..", "dbscripts", "public_schema.sql")
 	dbHandler, err := postgres_test.CreatePostgresContainer(s.ctx, initScriptPath)
 	require.NoError(s.T(), err)
 	s.dbHandler = dbHandler
 
-	// userIDs are needed to perform actions on posts due to foreign key policy in database
-	setupUsers(s.T(), dbHandler)
-	contentsRepository := postgres.NewContentsRepository(dbHandler)
+	s.contentRepo = postgres.NewContentsRepository(dbHandler)
+	s.cmd = NewPostContentCommand(s.contentRepo)
 
-	s.app = application.New(contentsRepository)
+	domain.InitValidator()
+	setupUsers(s.T(), dbHandler)
 }
 
 // creates a few users and saves the IDs for further usage
@@ -69,24 +70,24 @@ func setupUsers(t *testing.T, dbHandler *sql.DB) {
 }
 
 // clear table after each test to avoid conflicts and side effects
-func (s *ApplicationTestSuite) AfterTest() {
+func (s *PostContentTestSuite) AfterTest() {
 	queryClearPostsTable := `DELETE FROM posts`
 	_, err := s.dbHandler.ExecContext(s.ctx, queryClearPostsTable)
 	require.NoError(s.T(), err)
 }
 
-func (s *ApplicationTestSuite) TestCreateContent() {
-	cmd := commands.PostContentDto{
+func (s *PostContentTestSuite) TestCreateContent() {
+	cmd := PostContentDto{
 		Title:   "This is a title",
 		UserID:  userIDs[0],
 		Content: "This is the content",
 	}
 
-	postID, err := s.app.PostContent(s.ctx, &cmd)
+	postID, err := s.cmd.PostContent(s.ctx, &cmd)
 	require.NoError(s.T(), err)
 	require.NotEmpty(s.T(), postID)
 
-	post, err := s.app.GetContentDetails(s.ctx, postID)
+	post, err := s.contentRepo.GetByID(s.ctx, postID)
 	require.NoError(s.T(), err)
 	require.NotNil(s.T(), post)
 	require.Equal(s.T(), cmd.UserID, post.UserID)

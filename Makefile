@@ -23,5 +23,5 @@ unit_tests:
 
 integration_tests:
 	cd cmd; \
-	go test -v ./users/application; \
-	go test -v ./contents/application
+	go test -v ./users/application/commands; \
+	go test -v ./contents/application/commands
