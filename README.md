@@ -20,5 +20,5 @@ As the domain logic runs completely independent, it is much easier to unit test 
 - Distributed and in parts deeply nested folder structure. In order to touch one feature from end to end the developer has to jump around a lot
 
 ## Outlook
-The domain-centic architecutre makes an application not just clean but also resistent to technological changes. On the other hand this kind of application design makes it uncomfortable to adapt to changes in terms of business requirenments since the code which covers one feature is distributes throughout different folder.
+The domain-centic architecutre makes an application not just clean but also resilient to technological changes. On the other hand this kind of application design makes it uncomfortable to adapt to changes in terms of business requirenments since the code which covers one feature is distributes throughout different folders.
 A promising application design that tackles this challenge is the 'Vertical Slice Architecture' which I am exploring currently with the goal to combine both application designs.
