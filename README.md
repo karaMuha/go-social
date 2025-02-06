@@ -4,7 +4,7 @@ The purpose of this project is to practice hexagonal / clean architecture in the
 My motivation was to try out an alternative to classic N-layered architecture which encapsules the core business logic from any dependencies.
 
 ## Overview
-The application is build based on ports and adapters with the domain as the fully independet core accessible via commands and queries. The core application defines ports (interfaces) that the surrounding technical necessities adapt to. Those technical necessities are divided in to driving and driven components. Think of the driving components as 'feeds the application with data' and driven components as 'is fed by the application with data'.
+The application is build as a modular monolith and each module is based on ports and adapters with the domain as the fully independet core accessible via commands and queries. The core application defines ports (interfaces) that the surrounding technical necessities adapt to. Those technical necessities are divided in to driving and driven components. Think of the driving components as 'feeds the application with data' and driven components as 'is fed by the application with data'.
 As the domain logic runs completely independent, it is much easier to unit test compared to the N-layered architecture.
 
 ![Diagram of ports and adapter architecture](/diagram.png)
