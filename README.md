@@ -22,3 +22,16 @@ As the domain logic runs completely independent, it is much easier to unit test 
 ## Outlook
 The domain-centic architecutre makes an application not just clean but also resilient to technological changes. On the other hand this kind of application design makes it uncomfortable to adapt to changes in terms of business requirenments since the code which covers one feature is distributes throughout different folders.
 A promising application design that tackles this challenge is the 'Vertical Slice Architecture' which I am exploring currently with the goal to combine both application designs.
+
+## Running the application
+In order to run the application clone the repo and run `make setup` in the root directory of the project. Make sure Docker Desktop is up an running then execute the command `make run`. This will launch a docker compose cluster consisting of the application, a postgres database and a mailhog dev server for sending/receiving mails.
+Swagger is not setup yet, but feel free to explore the endpoints in the `module.go` file in each module.
+Mailhog UI is accessible on `localhost:8025`.
+
+To run unit tests execute the command `make unit_tests` and for integration tests `make integration_tests`.
+
+## Todo
+- provide Swagger documentation
+- implement structured logging (maybe save logs in a NoSQL database)
+- implement cache for frequently viewed profiles
+- implement file server to support images (and videos?) for content
