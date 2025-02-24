@@ -25,3 +25,11 @@ integration_tests:
 	cd cmd; \
 	go test -v ./users/application/commands; \
 	go test -v ./contents/application/commands
+
+static_check:
+	cd cmd; \
+	staticcheck ./...
+
+gosec:
+	cd cmd; \
+	gosec ./...
