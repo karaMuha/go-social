@@ -6,6 +6,7 @@ import (
 
 	"github.com/karaMuha/go-social/contents/application/commands"
 	ports "github.com/karaMuha/go-social/contents/application/ports/driver"
+	"github.com/karaMuha/go-social/internal/http/response"
 	"github.com/karaMuha/go-social/internal/middleware"
 )
 
@@ -47,15 +48,7 @@ func (h ContentsHandlerV1) HandleViewContentDetails(w http.ResponseWriter, r *ht
 		return
 	}
 
-	responseJson, err := json.Marshal(content)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(responseJson)
+	response.WithJson(w, http.StatusOK, content)
 }
 
 func (h ContentsHandlerV1) HandleUpdateContent(w http.ResponseWriter, r *http.Request) {
@@ -110,13 +103,5 @@ func (h ContentsHandlerV1) HandleViewUsersContent(w http.ResponseWriter, r *http
 		return
 	}
 
-	responseJson, err := json.Marshal(contentList)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(responseJson)
+	response.WithJson(w, http.StatusOK, contentList)
 }

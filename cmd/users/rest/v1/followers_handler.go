@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/karaMuha/go-social/internal/http/response"
 	"github.com/karaMuha/go-social/internal/middleware"
 	"github.com/karaMuha/go-social/users/application/commands"
 	"github.com/karaMuha/go-social/users/application/ports/driver"
@@ -61,13 +62,5 @@ func (h FollowersHandlerV1) ListFollowersOfUser(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	responseJson, err := json.Marshal(followerList)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(responseJson)
+	response.WithJson(w, http.StatusOK, followerList)
 }

@@ -6,6 +6,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -24,7 +25,7 @@ func NewTokenProvider(pathToPrivateKey string) JwtProvider {
 }
 
 func initPrivateKey(filename string) *rsa.PrivateKey {
-	file, err := os.Open(filename)
+	file, err := os.Open(filepath.Clean(filename))
 
 	if err != nil {
 		panic(err)
