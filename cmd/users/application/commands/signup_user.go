@@ -3,6 +3,7 @@ package commands
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/karaMuha/go-social/internal/mailer"
 	"github.com/karaMuha/go-social/users/application/domain"
@@ -41,7 +42,10 @@ func (c SignupUserCommand) SignupUser(ctx context.Context, cmd *SignupUserDto) e
 	err = c.mailer.SendRegistrationMail(registration.Email, registration.RegistrationToken)
 	if err != nil {
 		// transaction with rollback?
-		c.usersRepo.DeleteEntry(ctx, userID)
+		err = c.usersRepo.DeleteEntry(ctx, userID)
+		if err != nil {
+			log.Printf("Error deleting user entry after failed mail attempt: %v\n", err)
+		}
 		return fmt.Errorf("error signing up user: %w", err)
 	}
 

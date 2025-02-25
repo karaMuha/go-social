@@ -6,6 +6,7 @@ import (
 	"time"
 
 	authtoken "github.com/karaMuha/go-social/internal/auth_token"
+	"github.com/karaMuha/go-social/internal/http/response"
 	"github.com/karaMuha/go-social/users/application/commands"
 	"github.com/karaMuha/go-social/users/application/domain"
 	ports "github.com/karaMuha/go-social/users/application/ports/driver"
@@ -83,15 +84,7 @@ func (h UsersHandlerV1) HandleViewUserDetails(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	responseJson, err := json.Marshal(user)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(responseJson)
+	response.WithJson(w, http.StatusOK, user)
 }
 
 func (h UsersHandlerV1) HandleLogin(w http.ResponseWriter, r *http.Request) {

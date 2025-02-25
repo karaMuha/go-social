@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	posts "github.com/karaMuha/go-social/contents"
 	authtoken "github.com/karaMuha/go-social/internal/auth_token"
@@ -62,8 +63,9 @@ func run() error {
 	}
 
 	server := &http.Server{
-		Addr:    m.Config().RestPort,
-		Handler: authorizer,
+		Addr:        m.Config().RestPort,
+		Handler:     authorizer,
+		ReadTimeout: 5 * time.Second,
 	}
 
 	log.Println("Starting server")
