@@ -34,7 +34,6 @@ To run unit tests execute the command `make unit_tests` and for integration test
 
 ## Todo
 - provide Swagger documentation
-- implement logging (maybe save logs in a NoSQL database)
-- implement graceful shutdown
+- implement logging (maybe save logs in a seperate database)
 - implement cache for frequently viewed profiles
 - implement file server to support images (and videos?) for content

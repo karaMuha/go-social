@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
+	"os/signal"
+	"syscall"
 	"time"
 
 	posts "github.com/karaMuha/go-social/contents"
@@ -51,7 +54,7 @@ func run() error {
 		&posts.Module{},
 	}
 
-	log.Println("Starting mail server")
+	log.Println("Connecting to mail server")
 	mailServer := mailer.NewMailServer()
 
 	m := monolith.NewMonolith(config, db, mux, mailServer, modules, tokenProvider)
@@ -68,13 +71,28 @@ func run() error {
 		ReadTimeout: 5 * time.Second,
 	}
 
-	log.Println("Starting server")
-	err = server.ListenAndServe()
-	if err != nil {
-		return fmt.Errorf("error while starting server: %v", err)
+	go startServer(server)
+
+	shutdown, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
+	defer stop()
+	<-shutdown.Done()
+
+	log.Println("Shutting down server")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err = server.Shutdown(ctx); err != nil {
+		log.Printf("Shutdown with error: %v", err)
 	}
+	log.Println("Shutdown complete")
 
 	return nil
+}
+
+func startServer(srv *http.Server) {
+	log.Println("Start listening")
+	if err := srv.ListenAndServe(); err != nil {
+		log.Printf("Stopped listening: %v\n", err)
+	}
 }
 
 func registerHealthCheck(mux *http.ServeMux) {
