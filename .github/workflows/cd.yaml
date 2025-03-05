@@ -1,0 +1,27 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_push_image:
+    name: Build Docker Image and push to Container Registry
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build and push Image
+        run: |
+          cd cmd
+          docker build . --tag ghcr.io/karaMuha/go-social:latest
+          docker push ghcr.io/karaMuha/go-social:latest
