@@ -1,4 +1,5 @@
 ![workflow badge](https://github.com/karaMuha/go-social/actions/workflows/ci.yaml/badge.svg)
+![workflow badge](https://github.com/karaMuha/go-social/actions/workflows/cd.yaml/badge.svg)
 # go-social
 ## Purpose
 The purpose of this project is to practice hexagonal / clean architecture in the golang programming language, explore pros and cons of these kind of domain-centric architectures and come up with ideas to mitigate the cons.
