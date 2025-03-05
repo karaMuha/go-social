@@ -20,8 +20,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Build and push Image
+      - name: Set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >> ${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+      
+      - name: Build and push image
         run: |
           cd cmd
-          docker build . --tag ghcr.io/karaMuha/go-social:latest
-          docker push ghcr.io/karaMuha/go-social:latest
+          docker build . --tag ghcr.io/${{ env.OWNER_LC }}/go-social:latest
+          docker push ghcr.io/${{ env.OWNER_LC }}/go-social:latest
