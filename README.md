@@ -30,8 +30,9 @@ For reference watch this conference talk on [YouTube](https://www.youtube.com/wa
 ## Running the application
 #### Requirenments
 - Go version >= 1.23.0
-- OpenSSL (should be already installed on Linux Distributions)
+- OpenSSL (should already be installed on Linux distributions)
 - Docker / Docker Desktop
+- make (should already be installed on Linux distributions)
 
 In order to run the application clone the repo and run `make setup` in the root directory of the project. Make sure Docker Desktop is up an running then execute the command `make run`. This will launch a docker compose cluster consisting of the application, a postgres database and a mailhog dev server for sending/receiving mails.
 Swagger is not setup yet, but feel free to explore the endpoints in the `module.go` file in each module.
